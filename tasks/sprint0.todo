@@ -12,7 +12,7 @@ Sprint 0 :
             ✔ son url pattern sera '/' @done(24-05-07 10:09)
     
     test :
-        ☐ on 'jar' les fichier binaire 
-        ☐ on inclus  le fichier jar dans le lib du projet de test
-        ☐ le fichier web.xml sera copie dans le projet de test
-        ☐ on deploie le projet de test
+        ✔ on 'jar' les fichier binaire @done(24-05-07 10:50)
+        ✔ on inclus  le fichier jar dans le lib du projet de test @done(24-05-07 10:50)
+        ✔ le fichier web.xml sera copie dans le projet de test @done(24-05-07 10:50)
+        ✔ on deploie le projet de test @done(24-05-07 10:50)
