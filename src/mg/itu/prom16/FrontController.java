@@ -2,13 +2,22 @@ package mg.itu.prom16;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class FrontServlet extends HttpServlet{
+public class FrontController extends HttpServlet{
+    Ar
+    
+    @Override
+    public void init() throws ServletException {
+        // TODO Auto-generated method stub
+        super.init();
+    }
+    
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         processRequest(req, resp);
