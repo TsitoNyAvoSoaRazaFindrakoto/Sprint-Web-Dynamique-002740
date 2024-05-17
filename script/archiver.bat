@@ -1,8 +1,10 @@
 @echo off
 cd ../bin/
 
-if exist "D:\Studies\MrNaina\libs\myFramework.jar" (
-    del "D:\Studies\MrNaina\libs\myFramework.jar"
+set "my_path=D:\Studies\MrNaina\libs\myFramework.jar"
+
+if exist "%my_path%" (
+    del "%my_path%"
 )
 
-jar cf "D:\Studies\MrNaina\libs\myFramework.jar" *
+jar cf "%my_path%" *
