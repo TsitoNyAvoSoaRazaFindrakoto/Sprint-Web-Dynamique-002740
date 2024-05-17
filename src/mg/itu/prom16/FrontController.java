@@ -12,9 +12,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import mg.itu.prom16.Annotations.Controller;
 
 public class FrontController extends HttpServlet {
-    protected ArrayList<String> controllerArrayList = new ArrayList<String>();
+    protected ArrayList<Class<?>> controllerArrayList = new ArrayList<Class<?>>();
 
-    public void getControllerList(String packagename) throws Exception {
+    public void getControllerList(String packagename) {
         String bin_path = "WEB-INF/classes/" + packagename.replace(".", "/");
 
         bin_path = getServletContext().getRealPath(bin_path);
@@ -22,16 +22,24 @@ public class FrontController extends HttpServlet {
         File b = new File(bin_path);
         for (File onefile : b.listFiles()) {
             if (onefile.isFile() && onefile.getName().endsWith(".class")) {
-                Class<?> clazz = Class.forName(packagename + "." + onefile.getName().split(".class")[0]);
-                if (clazz.isAnnotationPresent(mg.itu.prom16.Annotations.Controller.class))
-                    controllerArrayList.add(clazz.getName());
+                Class<?> clazz;
+                try {
+                    clazz = Class.forName(packagename + "." + onefile.getName().split(".class")[0]);
+                    if (clazz.isAnnotationPresent(mg.itu.prom16.Annotations.Controller.class))
+                        controllerArrayList.add(clazz);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
+
     @Override
     public void init() throws ServletException {
         super.init();
+        getControllerList(getServletContext().getInitParameter("controllerPackage"));
+
     }
 
     @Override
@@ -48,10 +56,9 @@ public class FrontController extends HttpServlet {
             throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
         try {
-            getControllerList(getServletContext().getInitParameter("controllerPackage"));
 
-            for (String contr : controllerArrayList) {
-                out.println(contr);
+            for (Class<?> contr : controllerArrayList) {
+                out.println(contr.getName());
             }
         } catch (Exception e) {
             out.println(e.getMessage());
