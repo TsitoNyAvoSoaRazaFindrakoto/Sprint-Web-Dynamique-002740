@@ -4,22 +4,27 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import mg.itu.prom16.Annotations.Controller;
+import mg.itu.prom16.utils.AnnotationFinder;
+import mg.itu.prom16.utils.Mapping;
 
 public class FrontController extends HttpServlet {
-    protected ArrayList<Class<?>> controllerArrayList = new ArrayList<Class<?>>();
+    protected HashMap<String,Mapping> urlMapping = new HashMap<String,Mapping>();
 
-    public void getControllerList(String packagename) {
+    public  ArrayList<Class<?>> getControllerList(String packagename) {
         String bin_path = "WEB-INF/classes/" + packagename.replace(".", "/");
 
         bin_path = getServletContext().getRealPath(bin_path);
-
+        
         File b = new File(bin_path);
+
+        ArrayList<Class<?>> controllerArrayList = new ArrayList<Class<?>>();
+
         for (File onefile : b.listFiles()) {
             if (onefile.isFile() && onefile.getName().endsWith(".class")) {
                 Class<?> clazz;
@@ -32,13 +37,20 @@ public class FrontController extends HttpServlet {
                 }
             }
         }
+        return controllerArrayList;
     }
 
+    public void urlMapping(String packageName){
+        ArrayList<Class<?>> clazzList = getControllerList(packageName);
+        for(Class<?> clazz : clazzList){
+            urlMapping.putAll(AnnotationFinder.allGetMethods(clazz));
+        }
+    }
 
     @Override
     public void init() throws ServletException {
         super.init();
-        getControllerList(getServletContext().getInitParameter("controllerPackage"));
+        urlMapping(getServletContext().getInitParameter("controllerPackage"));
 
     }
 
@@ -52,19 +64,9 @@ public class FrontController extends HttpServlet {
         processRequest(req, resp);
     }
 
-    protected void processRequest(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
-        try {
-
-            for (Class<?> contr : controllerArrayList) {
-                out.println(contr.getName());
-            }
-        } catch (Exception e) {
-            out.println(e.getMessage());
-            for (StackTraceElement ste : e.getStackTrace()) {
-                out.println(ste);
-            }
-        }
+        out.println(req.getServletPath());
+        out.println(urlMapping.get(req.getServletPath()).urlmethod(null));
     }
 }
