@@ -39,7 +39,17 @@ public class FrontController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
-        out.println(req.getServletPath());
-        out.println(OutputManager.returnString(urlMapping.get(req.getServletPath())));
+        out.println(" path : "+req.getServletPath());
+        out.println(" class : " + urlMapping.get(req.getServletPath()).caller(null));
+        out.println(" method : " + urlMapping.get(req.getServletPath()).urlmethod(null));
+        try {
+            out.println(" output : " + OutputManager.returnString(urlMapping.get(req.getServletPath())));
+        } catch (Exception e) {
+
+            for( StackTraceElement ste : e.getStackTrace()){
+                out.println(ste.toString());
+            }
+            out.println(e.getMessage());
+        }
     }
 }
