@@ -11,21 +11,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import mg.itu.prom16.returnType.ModelAndView;
 import mg.itu.prom16.utils.AnnotationFinder;
 import mg.itu.prom16.utils.Mapping;
 import mg.itu.prom16.utils.OutputManager;
 
 public class FrontController extends HttpServlet {
-    protected HashMap<String,Mapping> urlMapping ;
-
-    
-
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        urlMapping = AnnotationFinder.urlMapping(getServletContext(),"controllerPackage");
-
-    }
+    protected HashMap<String, Mapping> urlMapping;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -37,19 +29,33 @@ public class FrontController extends HttpServlet {
         processRequest(req, resp);
     }
 
-    protected void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        PrintWriter out = resp.getWriter();
-        out.println(" path : "+req.getServletPath());
-        out.println(" class : " + urlMapping.get(req.getServletPath()).caller(null));
-        out.println(" method : " + urlMapping.get(req.getServletPath()).urlmethod(null));
-        try {
-            out.println(" output : " + OutputManager.returnString(urlMapping.get(req.getServletPath())));
-        } catch (Exception e) {
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        urlMapping = AnnotationFinder.urlMapping(getServletContext(), "controllerPackage");
 
-            for( StackTraceElement ste : e.getStackTrace()){
+    }
+
+    public void getRequestOutput(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        ModelAndView v = OutputManager.getOuput(urlMapping.get(req.getServletPath()));
+        req.setAttribute(v.key(null), v.value(null));
+        req.getRequestDispatcher("result.jsp").forward(req, resp);
+
+    }
+
+    protected void processRequest(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        try {
+            getRequestOutput(req, resp);
+        } catch (Exception e) {
+            PrintWriter out = resp.getWriter();
+            for (StackTraceElement ste : e.getStackTrace()) {
                 out.println(ste.toString());
             }
             out.println(e.getMessage());
         }
     }
+
 }
