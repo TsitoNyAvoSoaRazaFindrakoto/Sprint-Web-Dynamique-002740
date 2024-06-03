@@ -2,6 +2,8 @@ package mg.itu.prom16.utils;
 
 import java.lang.reflect.InvocationTargetException;
 
+import mg.itu.prom16.returnType.ModelAndView;
+
 public class OutputManager {
     private static Object getOneInstance(Class<?> toinstance){
         try {
@@ -25,17 +27,28 @@ public class OutputManager {
         }
     }
     
-    public static String returnString(Mapping map){
+    public static Object output(Mapping map){
         Class<?> methodsource;
         try {
             methodsource = Class.forName(map.caller(null));
         } catch (ClassNotFoundException e) {
-            return e.getMessage();
+            return e;
         }
         Object result = OutputManager.callMethod(methodsource, map.urlmethod(null));
+        return result;
+    }
+    
+    public static ModelAndView getOuput(Mapping map){
+        Object result = OutputManager.output(map);
+        ModelAndView v = new ModelAndView("", result);
         if (result instanceof Exception) {
-            return ((Exception)result).getMessage();
+           v.key("error");
+           return v; 
+        } else if (result instanceof String) {
+            v.key("output");
+            return v;
+        } else{
+            return ((ModelAndView)result) ;
         }
-        return String.valueOf(result);
-    } 
+    }
 }

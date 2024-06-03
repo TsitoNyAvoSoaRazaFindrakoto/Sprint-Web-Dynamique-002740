@@ -1,4 +1,4 @@
-package mg.itu.prom16.utils;
+package mg.itu.prom16.returnType;
 
 public class ModelAndView {
     String key;
@@ -19,4 +19,11 @@ public class ModelAndView {
         this.value = out;
         return null;
     }
+
+    public ModelAndView(String k , Object out){
+        key(k);
+        value(out);
+    }
+
+    public ModelAndView(){}
 }
