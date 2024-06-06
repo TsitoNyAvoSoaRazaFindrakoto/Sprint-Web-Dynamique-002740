@@ -6,6 +6,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.xml.transform.ErrorListener;
+
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -38,10 +40,18 @@ public class FrontController extends HttpServlet {
 
     public void getRequestOutput(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        ModelAndView v = OutputManager.getOuput(urlMapping.get(req.getServletPath()));
-        req.setAttribute(v.key(null), v.value(null));
-        req.getRequestDispatcher("result.jsp").forward(req, resp);
+        if (!urlMapping.containsKey(req.getServletPath())) {
+            resp.sendError(404, " page not found ");
+        }
+        try {
+            ModelAndView v = OutputManager.getOuput(urlMapping.get(req.getServletPath()));
 
+            req.setAttribute(v.key(null), v.value(null));
+            req.getRequestDispatcher("result.jsp").forward(req, resp);
+
+        } catch (Exception e) {
+            resp.sendError(0, e.getMessage());
+        }
     }
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp)
