@@ -2,6 +2,7 @@ package mg.itu.prom16.utils;
 
 import java.lang.reflect.InvocationTargetException;
 
+import jakarta.servlet.ServletException;
 import mg.itu.prom16.returnType.ModelAndView;
 
 public class OutputManager {
@@ -9,7 +10,6 @@ public class OutputManager {
         try {
             return toinstance.getConstructor(new Class<?>[0]).newInstance(new Object[0]);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             return e;
         }
     }
@@ -22,7 +22,6 @@ public class OutputManager {
         try {
             return location.getDeclaredMethod(method, new Class<?>[0]).invoke(callerObject, new Object[0]);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            // TODO Auto-generated catch block
             return new Exception(e.getMessage());
         }
     }
@@ -38,7 +37,7 @@ public class OutputManager {
         return result;
     }
     
-    public static ModelAndView getOuput(Mapping map){
+    public static ModelAndView getOuput(Mapping map) throws ServletException {
         Object result = OutputManager.output(map);
         ModelAndView v = new ModelAndView("", result);
         if (result instanceof Exception) {
@@ -48,7 +47,10 @@ public class OutputManager {
             v.key("output");
             return v;
         } else{
-            return ((ModelAndView)result) ;
+            if (!(result instanceof ModelAndView)) {
+                throw new ServletException("the method linked to the url does not return a ModelAndView object");
+            }
+            return ((ModelAndView)result);
         }
     }
 }
