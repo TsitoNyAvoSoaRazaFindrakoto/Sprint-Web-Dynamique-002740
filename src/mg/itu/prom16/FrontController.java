@@ -41,7 +41,7 @@ public class FrontController extends HttpServlet {
     public void getRequestOutput(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         if (!urlMapping.containsKey(req.getServletPath())) {
-            resp.sendError(404, " page not found ");
+            resp.sendError(404, " Page not found ");
         }
         try {
             ModelAndView v = OutputManager.getOuput(urlMapping.get(req.getServletPath()));
@@ -50,7 +50,7 @@ public class FrontController extends HttpServlet {
             req.getRequestDispatcher("result.jsp").forward(req, resp);
 
         } catch (Exception e) {
-            resp.sendError(0, e.getMessage());
+            resp.sendError(2, e.getMessage());
         }
     }
 
