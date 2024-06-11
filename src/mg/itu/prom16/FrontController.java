@@ -13,10 +13,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import mg.itu.prom16.returnType.ModelAndView;
-import mg.itu.prom16.utils.AnnotationFinder;
-import mg.itu.prom16.utils.Mapping;
-import mg.itu.prom16.utils.OutputManager;
+import mg.itu.prom16.Annotations.AnnotationFinder;
+import mg.itu.prom16.outputHandler.OutputManager;
+import mg.itu.prom16.types.Mapping;
+import mg.itu.prom16.types.ModelAndView;
 
 public class FrontController extends HttpServlet {
     protected HashMap<String, Mapping> urlMapping;
@@ -46,8 +46,14 @@ public class FrontController extends HttpServlet {
         try {
             ModelAndView v = OutputManager.getOuput(urlMapping.get(req.getServletPath()));
 
-            req.setAttribute(v.key(null), v.value(null));
-            req.getRequestDispatcher("result.jsp").forward(req, resp);
+			for ( String key : v.getAttributeNames()) {
+				req.setAttribute(key, v.getAttribute(key));
+			}
+			String header = v.getPage();
+			if (header == null) {
+				header="views/page.jsp";
+			}
+            req.getRequestDispatcher(header).forward(req, resp);
 
         } catch (Exception e) {
             resp.sendError(2, e.getMessage());

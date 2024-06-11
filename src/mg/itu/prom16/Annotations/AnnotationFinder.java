@@ -1,4 +1,4 @@
-package mg.itu.prom16.utils;
+package mg.itu.prom16.Annotations;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import mg.itu.prom16.Annotations.Get;
+import mg.itu.prom16.types.Mapping;
 
 public class AnnotationFinder {
     

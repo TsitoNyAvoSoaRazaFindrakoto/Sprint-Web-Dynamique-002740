@@ -1,4 +1,4 @@
-package mg.itu.prom16.utils;
+package mg.itu.prom16.types;
 
 public class Mapping {
     String caller;
