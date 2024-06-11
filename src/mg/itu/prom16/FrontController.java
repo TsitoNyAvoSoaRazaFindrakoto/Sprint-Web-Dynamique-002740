@@ -44,7 +44,7 @@ public class FrontController extends HttpServlet {
             resp.sendError(404, " Page not found ");
         }
         try {
-            ModelAndView v = OutputManager.getOuput(urlMapping.get(req.getServletPath()));
+            ModelAndView v = OutputManager.getOuput(req,urlMapping.get(req.getServletPath()));
 
 			for ( String key : v.getAttributeNames()) {
 				req.setAttribute(key, v.getAttribute(key));
