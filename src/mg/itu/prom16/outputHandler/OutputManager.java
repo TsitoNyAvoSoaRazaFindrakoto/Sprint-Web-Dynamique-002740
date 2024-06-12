@@ -17,18 +17,8 @@ public class OutputManager {
 		}
 	}
 
-	private static Method findMethod(String mName , Class<?> location) {
-		for (Method tofind : location.getDeclaredMethods()) {
-			if (tofind.getName().equalsIgnoreCase(mName)) {
-				return tofind;
-			}
-		}
-		return null;
-	}
-
-	private static Object callMethod(HttpServletRequest paramSource, Class<?> location, String method) {
+	private static Object callMethod(HttpServletRequest paramSource, Class<?> location, Method tocall) {
 		Object callerObject = OutputManager.getOneInstance(location);
-		Method tocall = OutputManager.findMethod(method, location);
 		if (callerObject instanceof Exception) {
 			return callerObject;
 		}
