@@ -37,7 +37,7 @@ public class FrontController extends HttpServlet {
     public void getRequestOutput(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         if (!urlMapping.containsKey(req.getServletPath())) {
-            resp.sendError(404, " Page not found ");
+            resp.sendError(404, " Page not found  , url not found ");
         }
         try {
             ModelAndView v = OutputManager.getOuput(req,urlMapping.get(req.getServletPath()));
@@ -46,8 +46,8 @@ public class FrontController extends HttpServlet {
 				req.setAttribute(key, v.getAttribute(key));
 			}
 			String header = v.getPage();
-			if (header == null) {
-				header="views/page.jsp";
+			if (header == null ) {
+				header="/views/page.jsp";
 			}
             req.getRequestDispatcher(header).forward(req, resp);
 
@@ -58,11 +58,11 @@ public class FrontController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
+			PrintWriter out = resp.getWriter();
         try {
+			
             getRequestOutput(req, resp);
         } catch (Exception e) {
-            PrintWriter out = resp.getWriter();
             for (StackTraceElement ste : e.getStackTrace()) {
                 out.println(ste.toString());
             }

@@ -37,6 +37,7 @@ public class OutputManager {
 			return e;
 		}
 		Object result = OutputManager.callMethod(paramSource ,methodsource, map.urlmethod(null));
+		
 		return result;
 	}
 
@@ -47,7 +48,7 @@ public class OutputManager {
 		if (result instanceof ModelAndView) {
 			v = ((ModelAndView) result);
 		} else if (result instanceof Exception) {
-			v.setPage("views/error.jsp");
+			v.setPage("/views/error.jsp");
 			v.setAttribute("error", result);
 		} else if (result instanceof String) {
 			v.setPage(result.toString());
