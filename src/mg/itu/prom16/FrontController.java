@@ -1,22 +1,18 @@
 package mg.itu.prom16;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.xml.transform.ErrorListener;
 
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import mg.itu.prom16.returnType.ModelAndView;
-import mg.itu.prom16.utils.AnnotationFinder;
-import mg.itu.prom16.utils.Mapping;
-import mg.itu.prom16.utils.OutputManager;
+import mg.itu.prom16.Annotations.AnnotationFinder;
+import mg.itu.prom16.outputHandler.OutputManager;
+import mg.itu.prom16.types.Mapping;
+import mg.itu.prom16.types.ModelAndView;
 
 public class FrontController extends HttpServlet {
     protected HashMap<String, Mapping> urlMapping;
@@ -41,13 +37,19 @@ public class FrontController extends HttpServlet {
     public void getRequestOutput(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         if (!urlMapping.containsKey(req.getServletPath())) {
-            resp.sendError(404, " Page not found ");
+            resp.sendError(404, " Page not found  , url not found ");
         }
         try {
-            ModelAndView v = OutputManager.getOuput(urlMapping.get(req.getServletPath()));
+            ModelAndView v = OutputManager.getOuput(req,urlMapping.get(req.getServletPath()));
 
-            req.setAttribute(v.key(null), v.value(null));
-            req.getRequestDispatcher("result.jsp").forward(req, resp);
+			for ( String key : v.getAttributeNames()) {
+				req.setAttribute(key, v.getAttribute(key));
+			}
+			String header = v.getPage();
+			if (header == null ) {
+				header="/views/page.jsp";
+			}
+            req.getRequestDispatcher(header).forward(req, resp);
 
         } catch (Exception e) {
             resp.sendError(2, e.getMessage());
@@ -56,11 +58,11 @@ public class FrontController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
+			PrintWriter out = resp.getWriter();
         try {
+			
             getRequestOutput(req, resp);
         } catch (Exception e) {
-            PrintWriter out = resp.getWriter();
             for (StackTraceElement ste : e.getStackTrace()) {
                 out.println(ste.toString());
             }
