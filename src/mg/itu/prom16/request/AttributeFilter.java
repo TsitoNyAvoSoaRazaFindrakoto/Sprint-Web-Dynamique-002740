@@ -5,20 +5,17 @@ import java.lang.reflect.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class AttributeFilter {
-	public static String findAttribute(HttpServletRequest req, Parameter m) {
-		if (req.getAttribute(m.getName()) != null) {
+	public static String findAttribute(HttpServletRequest req, Parameter m) throws Exception {
+		if (req.getParameter(m.getName()) != null) {
 			return m.getName();
+		} else if (m.isAnnotationPresent(mg.itu.prom16.Annotations.Param.class)) {
+			return m.getAnnotation(mg.itu.prom16.Annotations.Param.class).name();
 		}
+		throw new Exception("param not found :" + m.getName());
 
-		String paramAtServlet = null;
-		if (m.isAnnotationPresent(mg.itu.prom16.Annotations.Param.class)) {
-			paramAtServlet = m.getAnnotation(mg.itu.prom16.Annotations.Param.class).name();
-		}
-
-		return paramAtServlet;
 	}
 
-	public static String[] findAllAttributes(HttpServletRequest req, Parameter[] params) {
+	public static String[] findAllAttributes(HttpServletRequest req, Parameter[] params) throws Exception{
 		String[] atrname = new String[params.length];
 
 		for (int i = 0; i < atrname.length; i++) {
@@ -27,14 +24,13 @@ public class AttributeFilter {
 		return atrname;
 	}
 
-	public static Object[] findParamValues(HttpServletRequest req, Method m) {
+	public static Object[] findParamValues(HttpServletRequest req, Method m) throws Exception{
 		String[] atrnames = AttributeFilter.findAllAttributes(req, m.getParameters());
 		Object[] params = new Object[atrnames.length];
 		for (int i = 0; i < params.length; i++) {
 			if (atrnames[i] == null) {
-				params[i] = null;
-			}
-			params[i] = req.getAttribute(atrnames[i]);
+				params[i] = m.getParameters()[i].getName() + " is param ";
+			} else params[i] = req.getParameter(atrnames[i]);
 		}
 		return params;
 	}
