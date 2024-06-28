@@ -29,7 +29,7 @@ public class AnnotationFinder {
                 Class<?> clazz;
                 try {
                     clazz = Class.forName(packagename + "." + onefile.getName().split(".class")[0]);
-                    if (clazz.isAnnotationPresent(mg.itu.prom16.Annotations.Controller.class))
+                    if (clazz.isAnnotationPresent(mg.itu.prom16.Annotations.request.Controller.class))
                         controllerArrayList.add(clazz);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -49,8 +49,8 @@ public class AnnotationFinder {
         Method[] allMethods = location.getDeclaredMethods();
 
         for (Method method : allMethods) {
-            if(method.isAnnotationPresent(mg.itu.prom16.Annotations.Get.class)){
-                String urlValue = method.getAnnotation(mg.itu.prom16.Annotations.Get.class).url();
+            if(method.isAnnotationPresent(mg.itu.prom16.Annotations.request.Get.class)){
+                String urlValue = method.getAnnotation(mg.itu.prom16.Annotations.request.Get.class).url();
                 if(map.containsKey(urlValue)){
                     throw new ServletException(urlValue + " already exists");
                 }

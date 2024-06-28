@@ -1,4 +1,4 @@
-package mg.itu.prom16.Annotations;
+package mg.itu.prom16.Annotations.request;
 
 import java.lang.annotation.*;
 import java.util.HashMap;
