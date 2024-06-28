@@ -6,12 +6,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public class AttributeFilter {
 	public static String findAttribute(HttpServletRequest req, Parameter m) throws Exception {
-		if (req.getParameter(m.getName()) != null) {
-			return m.getName();
-		} else if (m.isAnnotationPresent(mg.itu.prom16.Annotations.Param.class)) {
+		if (m.isAnnotationPresent(mg.itu.prom16.Annotations.Param.class)) {
 			return m.getAnnotation(mg.itu.prom16.Annotations.Param.class).name();
 		}
-		throw new Exception("param not found :" + m.getName());
+		throw new Exception("ETU002740 : no annotation present for " + m.getName() );
 
 	}
 
