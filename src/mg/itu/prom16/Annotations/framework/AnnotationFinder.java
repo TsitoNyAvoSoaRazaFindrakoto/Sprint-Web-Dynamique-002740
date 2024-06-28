@@ -1,4 +1,4 @@
-package mg.itu.prom16.Annotations;
+package mg.itu.prom16.Annotations.framework;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -41,8 +41,6 @@ public class AnnotationFinder {
         // }
         return controllerArrayList;
     }
-
-    
 
     private static HashMap<String, Mapping> allGetMethods(Class<?> location) throws ServletException{
         HashMap<String,Mapping> map = new HashMap<String,Mapping>();

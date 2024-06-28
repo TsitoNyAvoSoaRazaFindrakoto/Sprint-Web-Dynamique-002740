@@ -9,7 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import mg.itu.prom16.Annotations.AnnotationFinder;
+import mg.itu.prom16.Annotations.framework.AnnotationFinder;
 import mg.itu.prom16.outputHandler.OutputManager;
 import mg.itu.prom16.types.Mapping;
 import mg.itu.prom16.types.ModelAndView;

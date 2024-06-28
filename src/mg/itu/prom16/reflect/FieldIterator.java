@@ -23,12 +23,15 @@ public class FieldIterator {
         return result;
     }
 
+	public static String method_name(Field field , String begin) {
+		return begin + (field.getName().charAt(0)+"").toUpperCase() + field.getName().substring(1);
+	}
+
     public static String[] methods_names(Class o,String begin) throws Exception {
         Field[] fs = o.getDeclaredFields();
         String[] names = new String[fs.length];
         for (int i = 0; i < names.length; i++) {
-            String fname = fs[i].getName();
-            names[i] = begin + (fname.charAt(0)+"").toUpperCase() + fname.substring(1);
+            names[i] =FieldIterator.method_name(fs[i], begin);
         }
         return names;
     }

@@ -3,12 +3,12 @@ package mg.itu.prom16.request;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 import jakarta.servlet.http.HttpServletRequest;
+import mg.itu.prom16.Annotations.models.FieldAnnotationManager;
 import mg.itu.prom16.Annotations.parameter.ParamObject;
 
-public class AttributeFilter {
+public class ParameterFilter {
 
 
 	public static String[] getObjectParameters(HttpServletRequest req , Parameter m) throws Exception {
@@ -17,7 +17,7 @@ public class AttributeFilter {
 			params.add(findAttribute(req, m));
 			return params.toArray(new String[0]);
 		}
-		
+		return FieldAnnotationManager.getAlternateFieldName(m.getType());
 	}
 
 	// Method to find the name of the parameter of the function in the request
@@ -26,26 +26,27 @@ public class AttributeFilter {
 			return m.getAnnotation(mg.itu.prom16.Annotations.parameter.Param.class).name();
 		}
 		throw new Exception("ETU002740 : no annotation present for " + m.getName() );
-
 	}
 
-	public static String[] findAllAttributes(HttpServletRequest req, Parameter[] params) throws Exception{
-		String[] atrname = new String[params.length];
-
+	public static String[][] findAllRequestParams(HttpServletRequest req, Parameter[] params) throws Exception{
+		String[][] atrname = new String[params.length][];
 		for (int i = 0; i < atrname.length; i++) {
-			atrname[i] = AttributeFilter.findAttribute(req, params[i]);
+			atrname[i] = ParameterFilter.getObjectParameters(req, params[i]);
 		}
 		return atrname;
 	}
 
-	public static Object[] findParamValues(HttpServletRequest req, Method m) throws Exception{
-		String[] atrnames = AttributeFilter.findAllAttributes(req, m.getParameters());
-		Object[] params = new Object[atrnames.length];
+	public static String[][] findParamValues(HttpServletRequest req, Parameter[] m) throws Exception{
+		String[][] params = ParameterFilter.findAllRequestParams(req, m);
 		for (int i = 0; i < params.length; i++) {
-			if (atrnames[i] == null) {
-				params[i] = m.getParameters()[i].getName() + " is param ";
-			} else params[i] = req.getParameter(atrnames[i]);
+			for (int j = 0; j < params[i].length; j++) {
+				if (params[i][j] == null) {
+					continue;
+				} 
+				params[i][j] = req.getParameter(params[i][j]);
+			}
 		}
 		return params;
 	}
+
 }
