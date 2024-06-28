@@ -1,15 +1,13 @@
-package mg.itu.prom16.utils;
+package mg.itu.prom16.Annotations;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import mg.itu.prom16.Annotations.Get;
+import mg.itu.prom16.types.Mapping;
 
 public class AnnotationFinder {
     
@@ -56,7 +54,7 @@ public class AnnotationFinder {
                 if(map.containsKey(urlValue)){
                     throw new ServletException(urlValue + " already exists");
                 }
-                map.put(urlValue,new Mapping(location.getName(),method.getName()));
+                map.put(urlValue,new Mapping(location.getName(),method));
             }
         }
 
