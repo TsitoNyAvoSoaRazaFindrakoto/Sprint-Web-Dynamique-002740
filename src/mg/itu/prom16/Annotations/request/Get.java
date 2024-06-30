@@ -1,9 +1,7 @@
 package mg.itu.prom16.Annotations.request;
 
 import java.lang.annotation.*;
-import java.util.HashMap;
 
-import mg.itu.prom16.types.Mapping;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

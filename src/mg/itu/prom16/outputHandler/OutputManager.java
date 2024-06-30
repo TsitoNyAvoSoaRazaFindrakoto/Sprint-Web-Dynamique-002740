@@ -14,7 +14,7 @@ public class OutputManager {
 			throws Exception {
 		Object caller = ClassIterator.instance(location);
 
-		String[][] values = ParameterFilter.findParamValues(paramSource, tocall.getParameters());
+		Object[][] values = ParameterFilter.findParamValues(paramSource, tocall.getParameters());
 		Object[] params = ParameterCreator.createParameters(values, tocall.getParameters());
 
 		return tocall.invoke(caller, params);
