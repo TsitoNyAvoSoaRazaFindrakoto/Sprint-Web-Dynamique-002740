@@ -11,7 +11,7 @@ public class MethodIterator {
 		return result;
 	}
 
-	public static Method[] getters(Class c) throws Exception {
+	public static Method[] getters(Class<?> c) throws Exception {
 		String[] names = FieldIterator.methods_names(c, "get");
 		Method[] ms = new Method[names.length];
 		for (int i = 0; i < ms.length; i++) {
@@ -20,11 +20,11 @@ public class MethodIterator {
 		return ms;
 	}
 
-	public static Method setter(Class c, Field field) throws NoSuchMethodException {
+	public static Method setter(Class<?> c, Field field) throws NoSuchMethodException {
 		return c.getDeclaredMethod(FieldIterator.method_name(field, "set"), field.getType());
 	}
 
-	public static Method[] setters(Class c) throws Exception {
+	public static Method[] setters(Class<?> c) throws Exception {
 		Field[] fields = c.getDeclaredFields();
 		String[] names = FieldIterator.methods_names(c, "set");
 		Method[] ms = new Method[names.length];
@@ -34,17 +34,13 @@ public class MethodIterator {
 		return ms;
 	}
 
-	public static Method setter_string(Class c, Field field) throws NoSuchMethodException {
+	public static Method setter_string(Class<?> c, Field field) throws NoSuchMethodException {
 		return c.getDeclaredMethod(FieldIterator.method_name(field, "set"), String.class);
 	}
 
-	public static Method[] setters_string(Class c) throws NoSuchMethodException {
-		ArrayList<Method> meths = new ArrayList<Method>();
-		for (Field fild : c.getDeclaredFields()) {
-			meths.add(MethodIterator.setter_string(c, fild));
-		}
-		return meths.toArray(new Method[0]);
+	public static Method setter_type(Class<?> c, Field field , Class<?> param) throws NoSuchMethodException{
+		return c.getDeclaredMethod(FieldIterator.method_name(field, "set"), param);
+
 	}
 
-	
 }

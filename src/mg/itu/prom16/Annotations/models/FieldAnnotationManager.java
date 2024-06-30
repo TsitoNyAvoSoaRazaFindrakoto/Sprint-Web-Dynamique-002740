@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import mg.itu.prom16.Annotations.request.FieldAlternate;
 
 public class FieldAnnotationManager {
-	public static Field[] getFieldsWithAlternateName(Class c){
+	public static Field[] getFieldsWithAlternateName(Class<?> c){
 		ArrayList<Field> fields = new ArrayList<Field>();
 		for (Field f : c.getDeclaredFields()) {
-			if (!f.getDeclaredAnnotation(FieldAlternate.class).exclude()) {
-				fields.add(f);
-			}
+			if (f.isAnnotationPresent(FieldAlternate.class)  && f.getDeclaredAnnotation(FieldAlternate.class).exclude()) {
+				continue;
+			} 
+			fields.add(f);
 		}
 
 		return fields.toArray(new Field[0]);
@@ -26,7 +27,7 @@ public class FieldAnnotationManager {
 		return paramId;
 	}
 
-	public static String[] getAlternateFieldName(Class c){
+	public static String[] getAlternateFieldName(Class<?> c){
 		return getAlternateNames(getFieldsWithAlternateName(c));
 	}
 

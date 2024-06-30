@@ -5,18 +5,18 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 public class FieldIterator {
-	public static int getFieldsNumber(Class c){
+	public static int getFieldsNumber(Class<?> c){
         return c.getDeclaredFields().length;
     }
 
-    public static Field[] getFields(Class o){
+    public static Field[] getFields(Class<?> o){
         Field[] fs = o.getDeclaredFields();
         return fs;
     }
 
-    public static Class[] getFieldTypes(Class o){
+    public static Class<?>[] getFieldTypes(Class<?> o){
         Field[] fs = o.getDeclaredFields();
-        Class[] result = new Class[fs.length];
+        Class<?>[] result = new Class<?>[fs.length];
         for (int i = 0; i < result.length; i++) {
             result[i] = fs[i].getType();
         }
@@ -27,7 +27,7 @@ public class FieldIterator {
 		return begin + (field.getName().charAt(0)+"").toUpperCase() + field.getName().substring(1);
 	}
 
-    public static String[] methods_names(Class o,String begin) throws Exception {
+    public static String[] methods_names(Class<?> o,String begin) throws Exception {
         Field[] fs = o.getDeclaredFields();
         String[] names = new String[fs.length];
         for (int i = 0; i < names.length; i++) {
