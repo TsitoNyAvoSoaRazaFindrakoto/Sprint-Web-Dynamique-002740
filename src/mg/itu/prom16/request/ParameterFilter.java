@@ -6,11 +6,40 @@ import java.util.ArrayList;
 import jakarta.servlet.http.HttpServletRequest;
 import mg.itu.prom16.Annotations.models.FieldAnnotationManager;
 import mg.itu.prom16.Annotations.parameter.ParamObject;
+import mg.itu.prom16.embed.EmbedSession;
 
 public class ParameterFilter {
 
+	public static Object getFromServlet(HttpServletRequest req, Parameter param) {
+		switch (param.getType().getName()) {
+			case "mg.itu.prom16.embed.EmbedSession":
+				return req.getSession();
+			default:
+				return null;
+		}
+	}
 
-	public static Object[] getObjectParameters(HttpServletRequest req , Parameter m) throws Exception {
+	public static boolean updateToServlet(HttpServletRequest req, Object o) {
+		switch (o.getClass().getName()) {
+			case "mg.itu.prom16.embed.EmbedSession":
+				((EmbedSession)o).toHttpSession(req.getSession());
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	public static Object[] getParameters(HttpServletRequest req, Parameter param) throws Exception {
+		switch (param.getType().toString()) {
+			case "jakarta.servlet.http.HttpSession":
+				Object[] o = { null };
+				return o;
+			default:
+				return getObjectParameters(req, param);
+		}
+	}
+
+	public static Object[] getObjectParameters(HttpServletRequest req, Parameter m) throws Exception {
 		ArrayList<Object> params = new ArrayList<Object>();
 		if (!m.isAnnotationPresent(ParamObject.class)) {
 			params.add(findAttribute(req, m));
@@ -25,25 +54,28 @@ public class ParameterFilter {
 			String annotName = m.getAnnotation(mg.itu.prom16.Annotations.parameter.Param.class).name();
 			return annotName.isBlank() ? m.getName() : annotName;
 		}
-		throw new Exception("ETU002740 : no annotation present for " + m.getName() );
+		throw new Exception("ETU002740 : no annotation present for " + m.getName());
 	}
 
-	public static Object[][] findAllRequestParams(HttpServletRequest req, Parameter[] params) throws Exception{
+	public static Object[][] findAllRequestParams(HttpServletRequest req, Parameter[] params) throws Exception {
 		Object[][] atrname = new Object[params.length][];
 		for (int i = 0; i < atrname.length; i++) {
-			atrname[i] = ParameterFilter.getObjectParameters(req, params[i]);
+			atrname[i] = getParameters(req, params[i]);
 		}
 		return atrname;
 	}
 
-	public static Object[][] findParamValues(HttpServletRequest req, Parameter[] m) throws Exception{
+	public static Object[][] findParamValues(HttpServletRequest req, Parameter[] m) throws Exception {
 		Object[][] params = ParameterFilter.findAllRequestParams(req, m);
 		for (int i = 0; i < params.length; i++) {
+			if (params[i] == null) {
+				continue;
+			}
 			for (int j = 0; j < params[i].length; j++) {
 				if (params[i][j] == null) {
 					continue;
-				} 
-				params[i][j] = req.getParameter(((String)params[i][j]));
+				}
+				params[i][j] = req.getParameter(((String) params[i][j]));
 			}
 		}
 		return params;
