@@ -11,9 +11,9 @@ public class ParameterCreator {
 	public static Object[] createParameters(Object[][] values , Parameter[] params) throws Exception{
 		Object[] result = new Object[values.length];
 		for (int i = 0; i < values.length; i++) {
-			if (params[i].getType()==String.class){
-				result[i] = values[i][0];
-                continue;
+			if (values[i]==null){} 
+			else if (params[i].getType().equals(String.class)){
+				result[i]=values[i][0];
 			} else if (TypeUtility.canCast(params[i].getType()) && values[i][0]!=null) {
 				result[i] = TypeUtility.castStringToType(((String)values[i][0]), params[i].getType());
 			} else {
@@ -21,7 +21,6 @@ public class ParameterCreator {
 				result[i] = ClassIterator.cast_and_create(params[i].getType(),corresponding_fields,values[i]);
 			}
 		}
-
 		return result;
 	}
 }

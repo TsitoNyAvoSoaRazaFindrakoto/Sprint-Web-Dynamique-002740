@@ -1,6 +1,7 @@
 package mg.itu.prom16.outputHandler;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
 import jakarta.servlet.http.HttpServletRequest;
 import mg.itu.prom16.reflect.ClassIterator;
@@ -10,14 +11,22 @@ import mg.itu.prom16.types.Mapping;
 import mg.itu.prom16.types.ModelAndView;
 
 public class OutputManager {
+
 	private static Object callMethod(HttpServletRequest paramSource, Class<?> location, Method tocall)
 			throws Exception {
 		Object caller = ClassIterator.instance(location);
+		Parameter[] params = tocall.getParameters();
+		Object[][] values = ParameterFilter.findParamValues(paramSource, params);
+		Object[] paramValues = ParameterCreator.createParameters(values, params);
 
-		Object[][] values = ParameterFilter.findParamValues(paramSource, tocall.getParameters());
-		Object[] params = ParameterCreator.createParameters(values, tocall.getParameters());
+		// prendre la session , cookies , contexte , ...
+		for (int i = 0; i < paramValues.length; i++) {
+			if (paramValues[i] == null) {
+				paramValues[i] = ParameterFilter.getFromServlet(paramSource, params[i]);
+			}
+		}
 
-		return tocall.invoke(caller, params);
+		return tocall.invoke(caller, paramValues);
 	}
 
 	public static Object output(HttpServletRequest paramSource, Mapping map) throws Exception {
@@ -26,7 +35,7 @@ public class OutputManager {
 		return result;
 	}
 
-	public static ModelAndView getOuput(HttpServletRequest paramSource, Mapping map) {
+	public static ModelAndView manageOuput(HttpServletRequest paramSource, Mapping map) {
 		ModelAndView v = new ModelAndView();
 		try {
 			Object result = OutputManager.output(paramSource, map);
@@ -34,10 +43,10 @@ public class OutputManager {
 			if (result instanceof ModelAndView) {
 				v = ((ModelAndView) result);
 			} else if (result instanceof String) {
-				v.setPage(result.toString());
+				v.setView(result.toString());
 			}
 		} catch (Exception e) {
-			v.setPage("/views/error.jsp");
+			v.setView("/views/error.jsp");
 			v.setAttribute("error", e);
 		}
 		return v;

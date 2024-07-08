@@ -4,19 +4,19 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class ModelAndView {
-	String page;
+	String view;
 	HashMap<String, Object> attributes = new HashMap<String,Object>();
 
 	// Getters and setters:
 
 	// for page
 
-	public void setPage(String page) {
-		this.page = page;
+	public void setView(String page) {
+		this.view = page;
 	}
 
-	public String getPage() {
-		return page;
+	public String getView() {
+		return view;
 	}
 
 	// for attibutes
@@ -55,7 +55,7 @@ public class ModelAndView {
 	// Constructors
 
 	public ModelAndView(String page) {
-		setPage(page);
+		setView(page);
 	}
 
 	public ModelAndView() {
@@ -65,7 +65,7 @@ public class ModelAndView {
 	// method for emptiness model and view
 
 	public boolean isEmpty(){
-		boolean invalidPage = getPage()==null || getPage().isEmpty(); 
+		boolean invalidPage = getView()==null || getView().isEmpty(); 
 		boolean invalidAttribute = ( getAttributes()==null || getAttributes().isEmpty());
 		return  invalidPage && invalidAttribute;
 	}

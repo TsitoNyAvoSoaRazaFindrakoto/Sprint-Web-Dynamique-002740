@@ -37,12 +37,12 @@ public class FrontController extends HttpServlet {
 		if (!urlMapping.containsKey(req.getServletPath())) {
 			resp.sendError(404, " Page not found  , url not foundy " + req.getServletPath());
 		}
-		ModelAndView v = OutputManager.getOuput(req, urlMapping.get(req.getServletPath()));
+		ModelAndView v = OutputManager.manageOuput(req, urlMapping.get(req.getServletPath()));
 
 		for (String key : v.getAttributeNames()) {
 			req.setAttribute(key, v.getAttribute(key));
 		}
-		String header = v.getPage();
+		String header = v.getView();
 		if (header == null) {
 			header = "/views/page.jsp";
 		}

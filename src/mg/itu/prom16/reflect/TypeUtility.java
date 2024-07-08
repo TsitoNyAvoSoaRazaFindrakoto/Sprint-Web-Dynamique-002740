@@ -1,7 +1,6 @@
 package mg.itu.prom16.reflect;
 
 import java.lang.reflect.Method;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,15 +43,13 @@ public class TypeUtility {
 	}
 
 	// Method to cast a string to a desired type
-	public static Object castStringToType(String value, Class<?> targetType) {
+	public static Object castStringToType(String value, Class<?> targetType) throws Exception {
 		// System.err.println(targetType);
 		// Convert to wrapper class if the target type is primitive
-		boolean isPrimitive = targetType.isPrimitive();
-		if (isPrimitive) {
-			targetType = getWrapperType(targetType);
-		}
-
-		try {
+		// boolean isPrimitive = targetType.isPrimitive();
+		// if (isPrimitive) {
+		// 	targetType = getWrapperType(targetType);
+		// }
 			Method valueOfMethod = targetType.getMethod("valueOf", String.class);
 			Object result = valueOfMethod.invoke(null, value);
 
@@ -72,13 +69,10 @@ public class TypeUtility {
 			 */
 
 			return result;
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Cannot cast string to type: " + targetType, e);
-		}
 	}
 
 	public static void main(String[] args) throws Exception {
-		Object o = TypeUtility.castStringToType("1", int.class);
+		Object o = String.valueOf("hello");
 		System.out.println(o.getClass());
 	}
 

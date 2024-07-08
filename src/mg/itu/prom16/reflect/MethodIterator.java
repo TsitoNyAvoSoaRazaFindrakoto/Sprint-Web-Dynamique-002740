@@ -2,7 +2,6 @@ package mg.itu.prom16.reflect;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 
 public class MethodIterator {
 	public static Object executeMethod(Object b, String name, Object[] params) throws Exception {
