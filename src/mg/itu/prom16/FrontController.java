@@ -42,7 +42,7 @@ public class FrontController extends HttpServlet {
 		for (String key : v.getAttributeNames()) {
 			req.setAttribute(key, v.getAttribute(key));
 		}
-		String header = v.getPage();
+		String header = v.getView();
 		if (header == null) {
 			header = "/views/page.jsp";
 		}

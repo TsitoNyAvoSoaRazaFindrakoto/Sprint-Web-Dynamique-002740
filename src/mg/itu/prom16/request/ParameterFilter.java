@@ -13,27 +13,16 @@ public class ParameterFilter {
 	public static Object getFromServlet(HttpServletRequest req, Parameter param) {
 		switch (param.getType().getName()) {
 			case "mg.itu.prom16.embed.EmbedSession":
-				return req.getSession();
+				return new EmbedSession(req.getSession());
 			default:
 				return null;
 		}
 	}
 
-	public static boolean updateToServlet(HttpServletRequest req, Object o) {
-		switch (o.getClass().getName()) {
-			case "mg.itu.prom16.embed.EmbedSession":
-				((EmbedSession)o).toHttpSession(req.getSession());
-				return true;
-			default:
-				return false;
-		}
-	}
-
 	public static Object[] getParameters(HttpServletRequest req, Parameter param) throws Exception {
-		switch (param.getType().toString()) {
-			case "jakarta.servlet.http.HttpSession":
-				Object[] o = { null };
-				return o;
+		switch (param.getType().getPackageName()) {
+			case "mg.itu.prom16.embed":
+				return null;
 			default:
 				return getObjectParameters(req, param);
 		}
@@ -79,6 +68,11 @@ public class ParameterFilter {
 			}
 		}
 		return params;
+	}
+
+	public static void main(String[] args) {
+		EmbedSession session = new EmbedSession();
+		System.out.println(session.getClass().getPackageName());
 	}
 
 }

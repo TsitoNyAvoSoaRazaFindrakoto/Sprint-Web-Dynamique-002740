@@ -2,8 +2,6 @@ package mg.itu.prom16.reflect;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 public class ClassIterator {
 	public static Class<?>[] getClasses(Object[] o) {

@@ -1,39 +1,37 @@
 package mg.itu.prom16.embed;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-
 import jakarta.servlet.http.HttpSession;
 
 public class EmbedSession {
-	HashMap<String,Object> sessionHashMap = new HashMap<String,Object>();
+	HttpSession session;
 
-	public Object add(String key , Object value) {
-		return sessionHashMap.put(key, value);
-	}
-
-	public boolean remove(String key , Object value) {
-		return sessionHashMap.remove(key,value);
-	}
-
-	public Object get(String key){
-		return sessionHashMap.get(key);
-	}
-
-	public Object remove(String key){
-		return sessionHashMap.remove(key);
-	}
+	public EmbedSession(){}
 
 	public EmbedSession(HttpSession session){
-		for (Enumeration<String> e = session.getAttributeNames(); e.hasMoreElements();){
-			String key = e.nextElement();
-			sessionHashMap.put(key, session.getAttribute(key));
-		}
+		setSession(session);
 	}
 
-	public void toHttpSession(HttpSession session){
-		for (String sessionHashMapKeys : sessionHashMap.keySet()) {
-			session.setAttribute(sessionHashMapKeys, get(sessionHashMapKeys));	
-		}
+	public HttpSession getSession() {
+		return session;
+	}
+
+	public void setSession(HttpSession session) {
+		this.session = session;
+	}
+
+	public Object get(String key) {
+		return getSession().getAttribute(key);
+	}
+
+	public void add(String key, Object value){
+		getSession().setAttribute(key, value);
+	}
+
+	public void remove(String key) {
+		getSession().removeAttribute(key);
+	}
+
+	public void reset(){
+		getSession().invalidate();
 	}
 }

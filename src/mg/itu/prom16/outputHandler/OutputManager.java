@@ -12,30 +12,21 @@ import mg.itu.prom16.types.ModelAndView;
 
 public class OutputManager {
 
-
-
 	private static Object callMethod(HttpServletRequest paramSource, Class<?> location, Method tocall)
 			throws Exception {
 		Object caller = ClassIterator.instance(location);
-		Parameter[] params= tocall.getParameters();
+		Parameter[] params = tocall.getParameters();
 		Object[][] values = ParameterFilter.findParamValues(paramSource, params);
 		Object[] paramValues = ParameterCreator.createParameters(values, params);
 
-
 		// prendre la session , cookies , contexte , ...
 		for (int i = 0; i < paramValues.length; i++) {
-			if (paramValues[i]==null) {
-				paramValues[i]=ParameterFilter.getFromServlet(paramSource, params[i]);
+			if (paramValues[i] == null) {
+				paramValues[i] = ParameterFilter.getFromServlet(paramSource, params[i]);
 			}
 		}
 
-		Object o = tocall.invoke(caller, paramValues);
-		// mettre a jour session , cookies ,  ...
-		for (int i = 0; i < paramValues.length; i++) {
-			ParameterFilter.updateToServlet(paramSource , paramValues[i]);
-		}
-
-		return 0;
+		return tocall.invoke(caller, paramValues);
 	}
 
 	public static Object output(HttpServletRequest paramSource, Mapping map) throws Exception {
@@ -52,10 +43,10 @@ public class OutputManager {
 			if (result instanceof ModelAndView) {
 				v = ((ModelAndView) result);
 			} else if (result instanceof String) {
-				v.setPage(result.toString());
+				v.setView(result.toString());
 			}
 		} catch (Exception e) {
-			v.setPage("/views/error.jsp");
+			v.setView("/views/error.jsp");
 			v.setAttribute("error", e);
 		}
 		return v;
