@@ -1,9 +1,14 @@
 package mg.itu.prom16.outputHandler;
 
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
+import com.google.gson.Gson;
+
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import mg.itu.prom16.Annotations.request.Restapi;
 import mg.itu.prom16.reflect.ClassIterator;
 import mg.itu.prom16.request.ParameterCreator;
 import mg.itu.prom16.request.ParameterFilter;
@@ -29,22 +34,29 @@ public class OutputManager {
 		return tocall.invoke(caller, paramValues);
 	}
 
-	public static Object output(HttpServletRequest paramSource, Mapping map) throws Exception {
-		Class<?> methodsource = Class.forName(map.caller(null));
-		Object result = OutputManager.callMethod(paramSource, methodsource, map.urlmethod(null));
-		return result;
-	}
-
-	public static ModelAndView manageOuput(HttpServletRequest paramSource, Mapping map) {
+	// responsible for parsing the output
+	public static ModelAndView manageOuput(HttpServletRequest paramSource, HttpServletResponse contentTarget,
+			Mapping map) {
 		ModelAndView v = new ModelAndView();
 		try {
-			Object result = OutputManager.output(paramSource, map);
 
-			if (result instanceof ModelAndView) {
-				v = ((ModelAndView) result);
-			} else if (result instanceof String) {
-				v.setView(result.toString());
+			Class<?> methodsource = Class.forName(map.caller(null));
+			Object result = OutputManager.callMethod(paramSource, methodsource, map.urlmethod(null));
+
+			if (map.urlmethod(null).isAnnotationPresent(Restapi.class)) {
+				Gson jsoner = new Gson();
+				contentTarget.setContentType("text/json");
+				PrintWriter out = contentTarget.getWriter();
+
+				if ((result instanceof ModelAndView)) {
+					out.print(jsoner.toJson(((ModelAndView) result).getAttributes()));
+				} else {
+					out.print(jsoner.toJson(result));
+				}
+				return null;
 			}
+			v = ((ModelAndView) result);
+
 		} catch (Exception e) {
 			v.setView("/views/error.jsp");
 			v.setAttribute("error", e);

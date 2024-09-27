@@ -1,9 +1,12 @@
 package mg.itu.prom16.Annotations.request;
 
+/**
+ * Restapi
+ */
 import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Controller {
-  boolean isController() default true;
+@Target(ElementType.METHOD)
+public @interface Restapi {
+	boolean isRestapi() default true;
 }
