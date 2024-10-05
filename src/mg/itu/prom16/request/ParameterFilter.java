@@ -4,8 +4,8 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 
 import jakarta.servlet.http.HttpServletRequest;
-import mg.itu.prom16.Annotations.models.FieldAnnotationManager;
-import mg.itu.prom16.Annotations.parameter.ParamObject;
+import mg.itu.prom16.annotations.models.FieldAnnotationManager;
+import mg.itu.prom16.annotations.parameter.ParamObject;
 import mg.itu.prom16.embed.EmbedSession;
 
 public class ParameterFilter {
@@ -39,8 +39,8 @@ public class ParameterFilter {
 
 	// Method to find the name of the parameter of the function in the request
 	public static String findAttribute(HttpServletRequest req, Parameter m) throws Exception {
-		if (m.isAnnotationPresent(mg.itu.prom16.Annotations.parameter.Param.class)) {
-			String annotName = m.getAnnotation(mg.itu.prom16.Annotations.parameter.Param.class).name();
+		if (m.isAnnotationPresent(mg.itu.prom16.annotations.parameter.Param.class)) {
+			String annotName = m.getAnnotation(mg.itu.prom16.annotations.parameter.Param.class).name();
 			return annotName.isBlank() ? m.getName() : annotName;
 		}
 		throw new Exception("ETU002740 : no annotation present for " + m.getName());

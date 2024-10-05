@@ -1,4 +1,4 @@
-package mg.itu.prom16.Annotations.framework;
+package mg.itu.prom16.annotations.framework;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -29,7 +29,7 @@ public class AnnotationFinder {
                 Class<?> clazz;
                 try {
                     clazz = Class.forName(packagename + "." + onefile.getName().split(".class")[0]);
-                    if (clazz.isAnnotationPresent(mg.itu.prom16.Annotations.request.Controller.class))
+                    if (clazz.isAnnotationPresent(mg.itu.prom16.annotations.request.Controller.class))
                         controllerArrayList.add(clazz);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -42,13 +42,14 @@ public class AnnotationFinder {
         return controllerArrayList;
     }
 
+
     private static HashMap<String, Mapping> allGetMethods(Class<?> location) throws ServletException{
         HashMap<String,Mapping> map = new HashMap<String,Mapping>();
         Method[] allMethods = location.getDeclaredMethods();
 
         for (Method method : allMethods) {
-            if(method.isAnnotationPresent(mg.itu.prom16.Annotations.request.Get.class)){
-                String urlValue = method.getAnnotation(mg.itu.prom16.Annotations.request.Get.class).url();
+            if(method.isAnnotationPresent(mg.itu.prom16.annotations.request.URLMap.class)){
+                String urlValue = method.getAnnotation(mg.itu.prom16.annotations.request.URLMap.class).path();
                 if(map.containsKey(urlValue)){
                     throw new ServletException(urlValue + " already exists");
                 }

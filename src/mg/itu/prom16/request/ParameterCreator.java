@@ -3,7 +3,7 @@ package mg.itu.prom16.request;
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 
-import mg.itu.prom16.Annotations.models.FieldAnnotationManager;
+import mg.itu.prom16.annotations.models.FieldAnnotationManager;
 import mg.itu.prom16.reflect.ClassIterator;
 import mg.itu.prom16.reflect.TypeUtility;
 

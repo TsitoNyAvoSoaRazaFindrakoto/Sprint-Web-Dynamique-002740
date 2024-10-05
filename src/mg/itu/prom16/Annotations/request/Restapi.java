@@ -1,4 +1,4 @@
-package mg.itu.prom16.Annotations.request;
+package mg.itu.prom16.annotations.request;
 
 /**
  * Restapi
