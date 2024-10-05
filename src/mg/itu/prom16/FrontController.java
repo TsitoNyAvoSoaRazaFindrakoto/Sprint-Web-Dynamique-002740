@@ -8,7 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import mg.itu.prom16.Annotations.framework.AnnotationFinder;
+import mg.itu.prom16.annotations.framework.AnnotationFinder;
 import mg.itu.prom16.outputHandler.OutputManager;
 import mg.itu.prom16.types.Mapping;
 import mg.itu.prom16.types.ModelAndView;
@@ -33,13 +33,27 @@ public class FrontController extends HttpServlet {
 
 	}
 
+	public Mapping manageError(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+		if (!urlMapping.containsKey(req.getServletPath())) {
+			resp.sendError(404, "ETU0002740 : url not found" + req.getServletPath());
+			return null;
+		}
+		Mapping m = urlMapping.get(req.getServletPath());
+
+		if (m.getVerb().equalsIgnoreCase(req.getMethod())) {
+			return m;
+		}
+		resp.sendError(500, "ETU002740 : method unothaurized");
+		return null;
+	}
+
 	public void getRequestOutput(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 		if (!urlMapping.containsKey(req.getServletPath())) {
-			resp.sendError(404, " Page not found  , url not foundy " + req.getServletPath());
+			resp.sendError(404, "ETU0002740 : url not found" + req.getServletPath());
 		}
-		ModelAndView v = OutputManager.manageOuput(req, resp, urlMapping.get(req.getServletPath()));
 
-		if(v!=null) {
+		ModelAndView v = OutputManager.manageOuput(req, resp, manageError(req, resp));
+		if (v != null) {
 			for (String key : v.getAttributeNames()) {
 				req.setAttribute(key, v.getAttribute(key));
 			}

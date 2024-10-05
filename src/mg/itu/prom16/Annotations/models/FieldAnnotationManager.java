@@ -1,9 +1,9 @@
-package mg.itu.prom16.Annotations.models;
+package mg.itu.prom16.annotations.models;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import mg.itu.prom16.Annotations.request.FieldAlternate;
+import mg.itu.prom16.annotations.request.FieldAlternate;
 
 public class FieldAnnotationManager {
 	public static Field[] getFieldsWithAlternateName(Class<?> c){

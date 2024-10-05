@@ -1,4 +1,4 @@
-package mg.itu.prom16.Annotations.parameter;
+package mg.itu.prom16.annotations.parameter;
 
 import java.lang.annotation.*;
 
