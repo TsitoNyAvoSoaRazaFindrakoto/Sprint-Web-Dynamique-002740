@@ -12,8 +12,8 @@ import mg.itu.prom16.annotations.request.Restapi;
 import mg.itu.prom16.reflect.ClassIterator;
 import mg.itu.prom16.request.ParameterCreator;
 import mg.itu.prom16.request.ParameterFilter;
-import mg.itu.prom16.types.Mapping;
-import mg.itu.prom16.types.ModelAndView;
+import mg.itu.prom16.types.mapping.Mapping;
+import mg.itu.prom16.types.returnType.ModelAndView;
 
 public class OutputManager {
 

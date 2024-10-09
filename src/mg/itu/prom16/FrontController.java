@@ -10,11 +10,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.itu.prom16.annotations.framework.AnnotationFinder;
 import mg.itu.prom16.outputHandler.OutputManager;
-import mg.itu.prom16.types.Mapping;
-import mg.itu.prom16.types.ModelAndView;
+import mg.itu.prom16.types.mapping.HashVerb;
+import mg.itu.prom16.types.returnType.ModelAndView;
 
 public class FrontController extends HttpServlet {
-	protected HashMap<String, Mapping> urlMapping;
+	protected HashMap<String, HashVerb> urlMapping;
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
