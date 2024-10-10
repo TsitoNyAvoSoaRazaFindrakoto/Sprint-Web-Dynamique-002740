@@ -1,7 +1,6 @@
 package mg.itu.prom16.types.mapping;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.lang.reflect.Method;
 
 public class HashVerb extends HashMap<String, Method> {
@@ -21,10 +20,8 @@ public class HashVerb extends HashMap<String, Method> {
 		}
 	}
 
-	@Override
-	public void putAll(Map<? extends String, ? extends Method> m) {
-		// TODO Auto-generated method stub
-		super.putAll(m);
+	public Class<?> getDeclaringClass(String key){
+		return get(key).getDeclaringClass();
 	}
 
 	public void expectError(String key, Method value) throws IllegalArgumentException {

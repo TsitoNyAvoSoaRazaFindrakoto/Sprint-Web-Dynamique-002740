@@ -3,6 +3,7 @@ package mg.itu.prom16;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -29,18 +30,22 @@ public class FrontController extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		urlMapping = AnnotationFinder.urlMapping(getServletContext(), "controllerPackage");
+		try {
+			urlMapping = AnnotationFinder.urlMapping(getServletContext(), "controllerPackage");
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
 
 	}
 
-	public Mapping manageError(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+	public HashVerb manageError(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 		if (!urlMapping.containsKey(req.getServletPath())) {
 			resp.sendError(404, "ETU0002740 : url not found" + req.getServletPath());
 			return null;
 		}
-		Mapping m = urlMapping.get(req.getServletPath());
+		HashVerb m = urlMapping.get(req.getServletPath());
 
-		if (m.getVerb().equalsIgnoreCase(req.getMethod())) {
+		if (m.containsKey(req.getMethod().toUpperCase())) {
 			return m;
 		}
 		resp.sendError(500, "ETU002740 : method unothaurized");

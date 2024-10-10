@@ -4,9 +4,12 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import mg.itu.prom16.annotations.request.method.Get;
+import mg.itu.prom16.annotations.request.method.Post;
 import mg.itu.prom16.types.mapping.HashVerb;
 
 public class AnnotationFinder {
@@ -42,31 +45,48 @@ public class AnnotationFinder {
 		return controllerArrayList;
 	}
 
-	private static HashMap<String, HashVerb> allGetMethods(Class<?> location) throws ServletException{
-        HashMap<String,HashVerb> map = new HashMap<String,HashVerb>();
-        Method[] allMethods = location.getDeclaredMethods();
+	public static String findAnnotationOnMethod(Method m) throws NoSuchElementException {
+		if (m.isAnnotationPresent(Post.class)) {
+			return "POST";
+		} else if (m.isAnnotationPresent(Get.class)) {
+			return "GET";
+		}
+		throw new NoSuchElementException(
+				"No annotation representing verb for method : " + m.getName() + " in " + m.getDeclaringClass().getName());
 
-        for (Method method : allMethods) {
-            if(method.isAnnotationPresent(mg.itu.prom16.annotations.request.URLMap.class)){
-                String urlValue = method.getAnnotation(mg.itu.prom16.annotations.request.URLMap.class).path();
-                if(map.containsKey(urlValue)){
-                  if (map.get(urlValue).containsKey(allMethods)) {
-										throw new ServletException(urlValue + " already exists");
-									}
-									map.
-                }
-            }
-        }
+	}
 
-        return map;  
-    }
+	private static HashMap<String, HashVerb> allGetMethods(Class<?> location)
+			throws ServletException, NoSuchElementException, IllegalArgumentException {
+		HashMap<String, HashVerb> map = new HashMap<String, HashVerb>();
+		Method[] allMethods = location.getDeclaredMethods();
+
+		for (Method method : allMethods) {
+			if (method.isAnnotationPresent(mg.itu.prom16.annotations.request.URLMap.class)) {
+				String verb = findAnnotationOnMethod(method);
+				String urlValue = method.getAnnotation(mg.itu.prom16.annotations.request.URLMap.class).path();
+				HashVerb verbHash = map.containsKey(urlValue) ? map.get(urlValue) : new HashVerb();
+				verbHash.put(verb, method);
+				map.put(urlValue, verbHash);
+			}
+		}
+		return map;
+	}
 
 	public static HashMap<String, HashVerb> urlMapping(ServletContext sc, String initparameter)
-			throws ServletException, IllegalArgumentException {
+			throws ServletException, IllegalArgumentException, NoSuchElementException {
 		ArrayList<Class<?>> clazzList = AnnotationFinder.getControllerList(sc, sc.getInitParameter(initparameter));
 		HashMap<String, HashVerb> urlMap = new HashMap<String, HashVerb>();
 		for (Class<?> clazz : clazzList) {
-			urlMap.putAll(AnnotationFinder.allGetMethods(clazz));
+			HashMap<String, HashVerb> clazzMap = AnnotationFinder.allGetMethods(clazz);
+			for (String urlkey : clazzMap.keySet()) {
+				HashVerb v = clazzMap.get(urlkey);
+				if (urlMap.containsKey(urlkey)) {
+					HashVerb verbMethod = urlMap.get(urlkey);
+					verbMethod.putAll(v);
+					urlMap.put(urlkey, verbMethod);
+				}
+			}
 		}
 		return urlMap;
 	}

@@ -12,7 +12,7 @@ import mg.itu.prom16.annotations.request.Restapi;
 import mg.itu.prom16.reflect.ClassIterator;
 import mg.itu.prom16.request.ParameterCreator;
 import mg.itu.prom16.request.ParameterFilter;
-import mg.itu.prom16.types.mapping.Mapping;
+import mg.itu.prom16.types.mapping.HashVerb;
 import mg.itu.prom16.types.returnType.ModelAndView;
 
 public class OutputManager {
@@ -36,14 +36,14 @@ public class OutputManager {
 
 	// responsible for parsing the output
 	public static ModelAndView manageOuput(HttpServletRequest paramSource, HttpServletResponse contentTarget,
-			Mapping map) {
+			HashVerb map) {
 		ModelAndView v = new ModelAndView();
 		try {
+			String verb = paramSource.getMethod();
+			Class<?> methodsource = map.getDeclaringClass(verb);
+			Object result = OutputManager.callMethod(paramSource, methodsource, map.get(verb));
 
-			Class<?> methodsource = Class.forName(map.caller(null));
-			Object result = OutputManager.callMethod(paramSource, methodsource, map.urlmethod(null));
-
-			if (map.urlmethod(null).isAnnotationPresent(Restapi.class)) {
+			if (map.get(verb).isAnnotationPresent(Restapi.class)) {
 				Gson jsoner = new Gson();
 				contentTarget.setContentType("text/json");
 				PrintWriter out = contentTarget.getWriter();
