@@ -1,4 +1,4 @@
-package mg.itu.prom16.types;
+package mg.itu.prom16.types.returnType;
 
 import java.util.HashMap;
 import java.util.Set;

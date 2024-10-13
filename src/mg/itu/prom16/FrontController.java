@@ -3,6 +3,7 @@ package mg.itu.prom16;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -10,11 +11,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.itu.prom16.annotations.framework.AnnotationFinder;
 import mg.itu.prom16.outputHandler.OutputManager;
-import mg.itu.prom16.types.Mapping;
-import mg.itu.prom16.types.ModelAndView;
+import mg.itu.prom16.types.mapping.HashVerb;
+import mg.itu.prom16.types.returnType.ModelAndView;
 
 public class FrontController extends HttpServlet {
-	protected HashMap<String, Mapping> urlMapping;
+	protected HashMap<String, HashVerb> urlMapping;
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,18 +30,22 @@ public class FrontController extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		urlMapping = AnnotationFinder.urlMapping(getServletContext(), "controllerPackage");
+		try {
+			urlMapping = AnnotationFinder.urlMapping(getServletContext(), "controllerPackage");
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
 
 	}
 
-	public Mapping manageError(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+	public HashVerb manageError(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 		if (!urlMapping.containsKey(req.getServletPath())) {
 			resp.sendError(404, "ETU0002740 : url not found" + req.getServletPath());
 			return null;
 		}
-		Mapping m = urlMapping.get(req.getServletPath());
+		HashVerb m = urlMapping.get(req.getServletPath());
 
-		if (m.getVerb().equalsIgnoreCase(req.getMethod())) {
+		if (m.containsKey(req.getMethod().toUpperCase())) {
 			return m;
 		}
 		resp.sendError(500, "ETU002740 : method unothaurized");
