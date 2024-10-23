@@ -24,7 +24,7 @@ public class OutputManager {
 		Object[][] values = ParameterFilter.findParamValues(paramSource, params);
 		Object[] paramValues = ParameterCreator.createParameters(values, params);
 
-		// prendre la session , cookies , contexte , ...
+		// prendre la session , cookies , contexte , fichier,...
 		for (int i = 0; i < paramValues.length; i++) {
 			if (paramValues[i] == null) {
 				paramValues[i] = ParameterFilter.getFromServlet(paramSource, params[i]);
