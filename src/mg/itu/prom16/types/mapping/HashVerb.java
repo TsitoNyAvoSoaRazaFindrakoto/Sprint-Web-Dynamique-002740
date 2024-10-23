@@ -39,6 +39,4 @@ public class HashVerb extends HashMap<String, Method> {
 			put(key, m.get(key));
 		}
 	}
-
-	
 }
