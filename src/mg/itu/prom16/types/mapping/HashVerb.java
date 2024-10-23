@@ -1,6 +1,7 @@
 package mg.itu.prom16.types.mapping;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.lang.reflect.Method;
 
 public class HashVerb extends HashMap<String, Method> {
@@ -31,4 +32,13 @@ public class HashVerb extends HashMap<String, Method> {
 			throw new IllegalArgumentException("Verb '" + key + " already exists");
 		}
 	}
+
+	@Override
+	public void putAll(Map<? extends String, ? extends Method> m) {
+		for (String key :m.keySet()) {
+			put(key, m.get(key));
+		}
+	}
+
+	
 }

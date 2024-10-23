@@ -3,7 +3,6 @@ package mg.itu.prom16;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.NoSuchElementException;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -29,9 +28,9 @@ public class FrontController extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
-		super.init();
 		try {
 			urlMapping = AnnotationFinder.urlMapping(getServletContext(), "controllerPackage");
+			super.init();
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
@@ -40,7 +39,7 @@ public class FrontController extends HttpServlet {
 
 	public HashVerb manageError(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 		if (!urlMapping.containsKey(req.getServletPath())) {
-			resp.sendError(404, "ETU0002740 : url not found" + req.getServletPath());
+			resp.sendError(404, "ETU0002740 : url not found " + req.getServletPath());
 			return null;
 		}
 		HashVerb m = urlMapping.get(req.getServletPath());
@@ -84,8 +83,9 @@ public class FrontController extends HttpServlet {
 		}
 	}
 
-	void display_urls(HttpServletResponse resp) throws IOException {
+	void display_urls(HttpServletResponse resp) throws IOException,ServletException {
 		PrintWriter out = resp.getWriter();
+		urlMapping = AnnotationFinder.urlMappingtest(getServletContext(), "controllerPackage",out);
 		out.println("URLs : ");
 		for (String url : urlMapping.keySet()) {
 			out.println(url);

@@ -10,10 +10,12 @@ import mg.itu.prom16.embed.EmbedSession;
 
 public class ParameterFilter {
 
-	public static Object getFromServlet(HttpServletRequest req, Parameter param) {
+	public static Object getFromServlet(HttpServletRequest req, Parameter param) throws Exception{
 		switch (param.getType().getName()) {
 			case "mg.itu.prom16.embed.EmbedSession":
 				return new EmbedSession(req.getSession());
+			case "jakarta.servlet.http.Part":
+				return req.getPart(param.getName());
 			default:
 				return null;
 		}
@@ -22,6 +24,7 @@ public class ParameterFilter {
 	public static Object[] getParameters(HttpServletRequest req, Parameter param) throws Exception {
 		switch (param.getType().getPackageName()) {
 			case "mg.itu.prom16.embed":
+			case "jakarta.servlet.http":
 				return null;
 			default:
 				return getObjectParameters(req, param);
