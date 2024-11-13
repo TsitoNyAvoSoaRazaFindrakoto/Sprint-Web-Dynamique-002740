@@ -10,7 +10,7 @@ import mg.itu.prom16.embed.EmbedSession;
 
 public class ParameterFilter {
 
-	public static Object getFromServlet(HttpServletRequest req, Parameter param) throws Exception{
+	public static Object getFromServlet(HttpServletRequest req, Parameter param) throws Exception {
 		switch (param.getType().getName()) {
 			case "mg.itu.prom16.embed.EmbedSession":
 				return new EmbedSession(req.getSession());
@@ -19,6 +19,30 @@ public class ParameterFilter {
 			default:
 				return null;
 		}
+	}
+
+	public static Object[][] findParamValues(HttpServletRequest req, Parameter[] m) throws Exception {
+		Object[][] params = ParameterFilter.findAllRequestParams(req, m);
+		for (int i = 0; i < params.length; i++) {
+			if (params[i] == null) {
+				continue;
+			}
+			for (int j = 0; j < params[i].length; j++) {
+				if (params[i][j] == null) {
+					continue;
+				}
+				params[i][j] = req.getParameter(((String) params[i][j]));
+			}
+		}
+		return params;
+	}
+
+	public static Object[][] findAllRequestParams(HttpServletRequest req, Parameter[] params) throws Exception {
+		Object[][] atrname = new Object[params.length][];
+		for (int i = 0; i < atrname.length; i++) {
+			atrname[i] = getParameters(req, params[i]);
+		}
+		return atrname;
 	}
 
 	public static Object[] getParameters(HttpServletRequest req, Parameter param) throws Exception {
@@ -47,35 +71,6 @@ public class ParameterFilter {
 			return annotName.isBlank() ? m.getName() : annotName;
 		}
 		throw new Exception("ETU002740 : no annotation present for " + m.getName());
-	}
-
-	public static Object[][] findAllRequestParams(HttpServletRequest req, Parameter[] params) throws Exception {
-		Object[][] atrname = new Object[params.length][];
-		for (int i = 0; i < atrname.length; i++) {
-			atrname[i] = getParameters(req, params[i]);
-		}
-		return atrname;
-	}
-
-	public static Object[][] findParamValues(HttpServletRequest req, Parameter[] m) throws Exception {
-		Object[][] params = ParameterFilter.findAllRequestParams(req, m);
-		for (int i = 0; i < params.length; i++) {
-			if (params[i] == null) {
-				continue;
-			}
-			for (int j = 0; j < params[i].length; j++) {
-				if (params[i][j] == null) {
-					continue;
-				}
-				params[i][j] = req.getParameter(((String) params[i][j]));
-			}
-		}
-		return params;
-	}
-
-	public static void main(String[] args) {
-		EmbedSession session = new EmbedSession();
-		System.out.println(session.getClass().getPackageName());
 	}
 
 }

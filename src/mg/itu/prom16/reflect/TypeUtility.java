@@ -29,7 +29,7 @@ public class TypeUtility {
 	public static boolean canCast(Class<?> c) {
 		return primitiveToWrapperMap.containsKey(c) ||
 				primitiveToWrapperMap.containsValue(c) ||
-				c == String.class ;
+				c == String.class;
 	}
 
 	public static boolean isSameType(Class<?> a, Class<?> b) {
@@ -48,27 +48,37 @@ public class TypeUtility {
 		// Convert to wrapper class if the target type is primitive
 		// boolean isPrimitive = targetType.isPrimitive();
 		// if (isPrimitive) {
-		// 	targetType = getWrapperType(targetType);
+		// targetType = getWrapperType(targetType);
 		// }
-			Method valueOfMethod = targetType.getMethod("valueOf", String.class);
-			Object result = valueOfMethod.invoke(null, value);
+		Method valueOfMethod = targetType.getMethod("valueOf", String.class);
+		Object result = valueOfMethod.invoke(null, value);
 
-			// If the original target type was primitive, convert back to primitive type
-			/*
-			 * if (isPrimitive) {
-			 * // System.out.println("primitive");
-			 * if (targetType == Integer.class) return (int) result;
-			 * if (targetType == Boolean.class) return (boolean) result;
-			 * if (targetType == Byte.class) return (byte) result;
-			 * if (targetType == Character.class) return (char) result;
-			 * if (targetType == Double.class) return (double) result;
-			 * if (targetType == Float.class) return (float) result;
-			 * if (targetType == Long.class) return (long) result;
-			 * if (targetType == Short.class) return (short) result;
-			 * }
-			 */
+		// If the original target type was primitive, convert back to primitive type
+		/*
+		 * if (isPrimitive) {
+		 * // System.out.println("primitive");
+		 * if (targetType == Integer.class) return (int) result;
+		 * if (targetType == Boolean.class) return (boolean) result;
+		 * if (targetType == Byte.class) return (byte) result;
+		 * if (targetType == Character.class) return (char) result;
+		 * if (targetType == Double.class) return (double) result;
+		 * if (targetType == Float.class) return (float) result;
+		 * if (targetType == Long.class) return (long) result;
+		 * if (targetType == Short.class) return (short) result;
+		 * }
+		 */
 
-			return result;
+		return result;
+	}
+
+	public static boolean isCommonJavaType(Class<?> clazz) {
+		return clazz.isPrimitive() ||
+				TypeUtility.primitiveToWrapperMap.containsValue(clazz) ||
+				clazz == String.class ||
+				Number.class.isAssignableFrom(clazz) ||
+				clazz == Boolean.class ||
+				clazz == Character.class ||
+				TypeUtility.canCast(clazz);
 	}
 
 	public static void main(String[] args) throws Exception {

@@ -48,4 +48,8 @@ public class FieldIterator {
 
         return fieldHashMap;
     }
+
+		public static String describe(Field f){
+			return "field " + f.getName() + " of type " + f.getType().getSimpleName() + " in " + f.getDeclaringClass().getSimpleName();
+		}
 }
