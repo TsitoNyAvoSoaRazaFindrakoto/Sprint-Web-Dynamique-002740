@@ -6,7 +6,7 @@ import java.lang.reflect.Parameter;
 import javax.xml.validation.Validator;
 
 import mg.itu.prom16.annotations.models.FieldAnnotationManager;
-import mg.itu.prom16.annotations.parameter.validation.Validation;
+import mg.itu.prom16.annotations.validation.Validation;
 import mg.itu.prom16.reflect.ClassIterator;
 import mg.itu.prom16.reflect.TypeUtility;
 
