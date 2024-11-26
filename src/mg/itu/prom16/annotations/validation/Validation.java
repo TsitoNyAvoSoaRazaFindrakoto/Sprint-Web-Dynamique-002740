@@ -7,7 +7,7 @@ import mg.itu.prom16.reflect.FieldIterator;
 
 public class Validation {
 
-	public static void assertNumberValidation(Field f, Object arg) throws IllegalStateException {
+	public static void assertNumberValidation(Field f, Object arg) throws IllegalArgumentException {
 		if (!(arg instanceof Number)) {
 			throw new IllegalArgumentException(FieldIterator.describe(f) + " is not a number");
 		}

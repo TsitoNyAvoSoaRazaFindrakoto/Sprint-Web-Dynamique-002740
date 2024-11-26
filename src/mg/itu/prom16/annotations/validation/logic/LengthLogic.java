@@ -9,7 +9,7 @@ import mg.itu.prom16.reflect.FieldIterator;
 public class LengthLogic implements Validator {
 
 	@Override
-	public void isvalid(Field f, Object arg) throws IllegalStateException {
+	public void isvalid(Field f, Object arg) throws IllegalArgumentException {
 		if (!(arg instanceof String)) {
 			throw new IllegalArgumentException(FieldIterator.describe(f) + " is not a string");
 		}
@@ -17,7 +17,7 @@ public class LengthLogic implements Validator {
 		int min = (int) f.getDeclaredAnnotation(Length.class).min();
 		int max = (int) f.getDeclaredAnnotation(Length.class).max();
 		if (value.length() < min || value.length() > max) {
-			throw new IllegalStateException(FieldIterator.describe(f) + ":" + f.getDeclaredAnnotation(Length.class).error());
+			throw new IllegalArgumentException(FieldIterator.describe(f) + ":" + f.getDeclaredAnnotation(Length.class).error());
 		}
 	}
 	

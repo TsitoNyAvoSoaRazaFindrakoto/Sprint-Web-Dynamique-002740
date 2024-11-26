@@ -10,12 +10,12 @@ import mg.itu.prom16.reflect.FieldIterator;
 public class MinLogic implements Validator {
 
 	@Override
-	public void isvalid(Field f, Object arg) throws IllegalStateException {
+	public void isvalid(Field f, Object arg) throws IllegalArgumentException {
 		Validation.assertNumberValidation(f, arg);
 		double min = f.getDeclaredAnnotation(Min.class).value();
 		double value = ((Number) arg).doubleValue();
 		if (value < min) {
-			throw new IllegalStateException(FieldIterator.describe(f) + ":" + f.getDeclaredAnnotation(Min.class).error());
+			throw new IllegalArgumentException(FieldIterator.describe(f) + ":" + f.getDeclaredAnnotation(Min.class).error());
 		}
 	}
 	

@@ -9,9 +9,9 @@ import mg.itu.prom16.reflect.FieldIterator;
 public class RequiredLogic implements Validator {
 
 	@Override
-	public void isvalid(Field f, Object arg) throws IllegalStateException {
+	public void isvalid(Field f, Object arg) throws IllegalArgumentException {
 		if (arg == null || (arg instanceof String && ((String) arg).isEmpty())) {
-			throw new IllegalStateException(
+			throw new IllegalArgumentException(
 					FieldIterator.describe(f) + ":" + f.getDeclaredAnnotation(Required.class).error());
 		}
 	}

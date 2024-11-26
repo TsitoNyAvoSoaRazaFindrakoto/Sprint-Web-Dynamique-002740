@@ -34,6 +34,16 @@ public class OutputManager {
 		return tocall.invoke(caller, paramValues);
 	}
 
+	private ModelAndView rollBack(HttpServletRequest paramSource,
+			HashVerb map) {
+		ModelAndView v = new ModelAndView();
+		String verb = paramSource.getMethod();
+		Class<?> methodsource = map.getDeclaringClass(verb);
+		Object result = OutputManager.callMethod(paramSource, methodsource, map.get(verb));
+
+		return v;
+	}
+
 	// responsible for parsing the output
 	public static ModelAndView manageOuput(HttpServletRequest paramSource, HttpServletResponse contentTarget,
 			HashVerb map) {
@@ -41,7 +51,12 @@ public class OutputManager {
 		try {
 			String verb = paramSource.getMethod();
 			Class<?> methodsource = map.getDeclaringClass(verb);
-			Object result = OutputManager.callMethod(paramSource, methodsource, map.get(verb));
+			Object result = null;
+			try {
+				result = OutputManager.callMethod(paramSource, methodsource, map.get(verb));
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 
 			if (map.get(verb).isAnnotationPresent(Restapi.class)) {
 				Gson jsoner = new Gson();
