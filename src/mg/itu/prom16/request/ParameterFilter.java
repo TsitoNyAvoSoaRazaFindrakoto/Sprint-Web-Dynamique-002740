@@ -21,6 +21,21 @@ public class ParameterFilter {
 		}
 	}
 
+	public static void transformToAttribute(HttpServletRequest req, Parameter[] m) throws Exception {
+		Object[][] params = ParameterFilter.findAllRequestParams(req, m);
+		for (int i = 0; i < params.length; i++) {
+			if (params[i] == null) {
+				continue;
+			}
+			for (int j = 0; j < params[i].length; j++) {
+				if (params[i][j] == null) {
+					continue;
+				}
+				req.setAttribute((String) params[i][j], req.getParameter(((String) params[i][j])));
+			}
+		}
+	}
+
 	public static Object[][] findParamValues(HttpServletRequest req, Parameter[] m) throws Exception {
 		Object[][] params = ParameterFilter.findAllRequestParams(req, m);
 		for (int i = 0; i < params.length; i++) {

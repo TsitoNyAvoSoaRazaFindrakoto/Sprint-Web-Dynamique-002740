@@ -17,7 +17,7 @@ public class LengthLogic implements Validator {
 		int min = (int) f.getDeclaredAnnotation(Length.class).min();
 		int max = (int) f.getDeclaredAnnotation(Length.class).max();
 		if (value.length() < min || value.length() > max) {
-			throw new IllegalArgumentException(FieldIterator.describe(f) + ":" + f.getDeclaredAnnotation(Length.class).error());
+			throw new IllegalArgumentException(f.getDeclaredAnnotation(Length.class).error() + " " + min + "-" + max);
 		}
 	}
 	

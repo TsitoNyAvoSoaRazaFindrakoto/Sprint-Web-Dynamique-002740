@@ -11,7 +11,7 @@ import mg.itu.prom16.annotations.validation.logic.RequiredLogic;
 
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target(ElementType.FIELD)
 @Constraint(validator = RequiredLogic.class)
 public @interface Required {
 	String error() default "required";

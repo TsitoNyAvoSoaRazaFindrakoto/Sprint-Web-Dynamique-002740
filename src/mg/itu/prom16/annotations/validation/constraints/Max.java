@@ -9,7 +9,7 @@ import mg.itu.prom16.annotations.validation.Constraint;
 import mg.itu.prom16.annotations.validation.logic.MaxLogic;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target(ElementType.FIELD)
 @Constraint(validator = MaxLogic.class)
 public @interface Max {
 	double value() default Double.MAX_VALUE;
