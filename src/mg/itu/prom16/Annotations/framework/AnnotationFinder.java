@@ -9,8 +9,6 @@ import java.util.NoSuchElementException;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import mg.itu.prom16.annotations.request.method.Get;
-import mg.itu.prom16.annotations.request.method.Post;
 import mg.itu.prom16.types.mapping.HashVerb;
 
 public class AnnotationFinder {
@@ -46,15 +44,6 @@ public class AnnotationFinder {
 		return controllerArrayList;
 	}
 
-	public static String findAnnotationOnMethod(Method m) throws NoSuchElementException {
-		if (m.isAnnotationPresent(Post.class)) {
-			return "POST";
-		} else if (m.isAnnotationPresent(Get.class)) {
-			return "GET";
-		}
-		throw new NoSuchElementException(
-				"No annotation representing verb for method : " + m.getName() + " in " + m.getDeclaringClass().getName());
-	}
 
 	private static HashMap<String, HashVerb> allGetMethods(Class<?> location)
 			throws ServletException, NoSuchElementException, IllegalArgumentException {
@@ -63,7 +52,7 @@ public class AnnotationFinder {
 
 		for (Method method : allMethods) {
 			if (method.isAnnotationPresent(mg.itu.prom16.annotations.request.URLMap.class)) {
-				String verb = findAnnotationOnMethod(method);
+				String verb = method.getAnnotation(mg.itu.prom16.annotations.request.URLMap.class).method();
 				String urlValue = method.getAnnotation(mg.itu.prom16.annotations.request.URLMap.class).path();
 				HashVerb verbHash = map.containsKey(urlValue) ? map.get(urlValue) : new HashVerb();
 				verbHash.put(verb, method);
@@ -100,7 +89,7 @@ public class AnnotationFinder {
 
 		for (Method method : allMethods) {
 			if (method.isAnnotationPresent(mg.itu.prom16.annotations.request.URLMap.class)) {
-				String verb = findAnnotationOnMethod(method);
+				String verb = method.getAnnotation(mg.itu.prom16.annotations.request.URLMap.class).method();
 				String urlValue = method.getAnnotation(mg.itu.prom16.annotations.request.URLMap.class).path();
 				HashVerb verbHash = map.containsKey(urlValue) ? map.get(urlValue) : new HashVerb();
 				verbHash.put(verb, method);

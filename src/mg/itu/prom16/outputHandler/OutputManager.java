@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import mg.itu.prom16.annotations.request.Restapi;
+import mg.itu.prom16.annotations.request.URLMap;
 import mg.itu.prom16.reflect.ClassIterator;
 import mg.itu.prom16.request.ParameterCreator;
 import mg.itu.prom16.request.ParameterFilter;
@@ -50,11 +50,11 @@ public class OutputManager {
 
 	// reourne l'ouput
 	public static Object getOuptut(HttpServletRequest paramSource, HttpServletResponse contentTarget,
-			HashVerb map,String verb) throws Exception {
+			HashVerb map, String verb) throws Exception {
 		Class<?> methodsource = map.getDeclaringClass(verb);
 		Object result = OutputManager.callMethod(paramSource, methodsource, map.get(verb));
-		
-		if (map.get(verb).isAnnotationPresent(Restapi.class)) {
+
+		if (map.get(verb).getAnnotation(URLMap.class).rest()) {
 			Gson jsoner = new Gson();
 			contentTarget.setContentType("text/json");
 			PrintWriter out = contentTarget.getWriter();
@@ -71,20 +71,25 @@ public class OutputManager {
 
 	// responsible for parsing the output
 	public static ModelAndView manageOuput(HttpServletRequest paramSource, HttpServletResponse contentTarget,
-			HashVerb map, HashVerb oldMap) {
+			HashVerb map) throws IllegalArgumentException{
 		ModelAndView v = new ModelAndView();
 		try {
 			Object result = OutputManager.getOuptut(paramSource, contentTarget, map,paramSource.getMethod());
-			if (oldMap != null && result instanceof IllegalArgumentException
+			/* if (oldMap != null && result instanceof IllegalArgumentException
 					&& ((IllegalArgumentException) result).getMessage() == "constraint") {
 				System.out.println("rollback");
-				result = getOuptut(paramSource, contentTarget, oldMap,"GET");
-			}
+				result = getOuptut(paramSource, contentTarget, oldMap);
+			} */
 
 			if (result == null) return null;
 			v = ((ModelAndView) result);
 
 		} catch (Exception e) {
+			if (e instanceof IllegalArgumentException
+					&& ((IllegalArgumentException) e).getMessage() == "constraint") {
+				System.out.println("need to rollback");
+				throw ((IllegalArgumentException)e);
+			}
 			v.setView("/views/error.jsp");
 			v.setAttribute("error", e);
 		}

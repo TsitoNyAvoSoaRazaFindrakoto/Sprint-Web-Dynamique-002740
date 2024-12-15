@@ -2,14 +2,17 @@ package mg.itu.prom16;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URI;
+
 import java.util.HashMap;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.itu.prom16.annotations.framework.AnnotationFinder;
+import mg.itu.prom16.annotations.request.URLMap;
+import mg.itu.prom16.annotations.validation.Fallback;
 import mg.itu.prom16.outputHandler.OutputManager;
 import mg.itu.prom16.types.mapping.HashVerb;
 import mg.itu.prom16.types.returnType.ModelAndView;
@@ -41,22 +44,20 @@ public class FrontController extends HttpServlet {
 	public String getUrlMapping(HttpServletRequest request) {
 		String fullURI = request.getRequestURI(); // Full URI, e.g., /rootProject/mapping/endpoint
 		String contextPath = request.getContextPath(); // Context path, e.g., /rootProject
-		String urlMapping = fullURI.substring(contextPath.length()); // Removes the context path
+		String urlMapping = fullURI.replaceFirst(request.getServerName() + ":" + request.getServerPort() + contextPath, "");
 		System.out.println("URL Mapping: " + urlMapping);
 		return urlMapping;
 	}
 
-	public String getReferer(HttpServletRequest request) {
+	public String getRefererPath(HttpServletRequest request) {
 		String referer = request.getHeader("Referer"); // Full Referer URL
 		if (referer != null) {
-			String contextPath = request.getContextPath(); // e.g., /rootProject
-			String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-					+ contextPath;
+			String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
 
 			if (referer.startsWith(baseUrl)) {
-				referer =  referer.substring(baseUrl.length()); // Get only the part after /rootProject
+				referer = referer.substring(baseUrl.length()); // Get only the part after /rootProject
 				System.out.println("URL Mapping from Referer: " + referer);
-				if (urlMapping.get(referer)!=null) {
+				if (urlMapping.get(referer) != null) {
 					System.out.println("referer url mapping found");
 				}
 			} else {
@@ -89,16 +90,31 @@ public class FrontController extends HttpServlet {
 		ModelAndView v = null;
 
 		// output prend toujours l'url appelant et le referer
-		v = OutputManager.manageOuput(request, resp, manageError(request, resp), urlMapping.get(getReferer(request)));
-		if (v != null) {
-			for (String key : v.getAttributeNames()) {
-				request.setAttribute(key, v.getAttribute(key));
+		HashVerb urlMethod = manageError(request, resp);
+		try {
+			v = OutputManager.manageOuput(request, resp, urlMethod);
+			if (v != null) {
+				for (String key : v.getAttributeNames()) {
+					request.setAttribute(key, v.getAttribute(key));
+				}
+				String header = v.getView();
+				if (header == null) {
+					header = "/views/page.jsp";
+				}
+				request.getRequestDispatcher(header).forward(request, resp);
 			}
-			String header = v.getView();
-			if (header == null) {
-				header = "/views/page.jsp";
+		} catch (IllegalArgumentException e) {
+			if (e.getMessage() == "constraint") {
+				String method = urlMethod.get(request.getMethod().toUpperCase()).getAnnotation(Fallback.class).method();
+				String path = urlMethod.get(request.getMethod().toUpperCase()).getAnnotation(Fallback.class).verb();
+				HttpServletRequestWrapper newRequest = new HttpServletRequestWrapper(request){
+					public String getMethod() {
+						return method;
+					}
+				};
+				request.getRequestDispatcher(path).forward(newRequest, resp);
 			}
-			request.getRequestDispatcher(header).forward(request, resp);
+			throw e;
 		}
 	}
 
