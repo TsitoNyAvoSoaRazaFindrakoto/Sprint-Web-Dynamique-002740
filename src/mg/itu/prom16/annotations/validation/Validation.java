@@ -2,14 +2,16 @@ package mg.itu.prom16.annotations.validation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import mg.itu.prom16.reflect.FieldIterator;
 
 public class Validation {
 
-	public static void assertNumberValidation(Field f, Object arg) throws IllegalStateException {
+	public static void assertNumberValidation(Field f, Object arg) throws IllegalArgumentException {
 		if (!(arg instanceof Number)) {
-			throw new IllegalArgumentException(FieldIterator.describe(f) + " is not a number");
+			throw new IllegalArgumentException(f.getName() + " is not a number");
 		}
 	}
 
@@ -24,21 +26,22 @@ public class Validation {
 		}
 	}
 
-	public static void assertObject(Class<?> c, Field[] fields, Object[] args) throws Exception {
-		String errorMessage = "";
+	public static HashMap<String,List<String>> assertObject(Class<?> c, Field[] fields, Object[] args) throws Exception {
+		HashMap<String,List<String>> errors = new HashMap<>();
 		for (int i = 0; i < fields.length; i++) {
-			Field f = fields[i];
+			Field  f   = fields[i];
 			Object arg = args[i];
 			try {
 				assertValidation(f, arg);
-			} catch (IllegalStateException assertException) {
-				errorMessage += assertException.getMessage() + "\n";
 			} catch (IllegalArgumentException typeException) {
-				errorMessage += typeException.getMessage() + "\n";
+				List<String> fieldErrors = errors.get("error_"+f.getName()) == null ? new ArrayList<>() :  errors.get(f.getName());
+				fieldErrors.add(typeException.getMessage());
+				errors.put(f.getName(), fieldErrors);
 			}
 		}
-		if (!errorMessage.isEmpty()) {
-			throw new IllegalArgumentException(errorMessage.trim());
+		if (!errors.isEmpty()) {
+			return errors;
 		}
+		return null;
 	}
 }

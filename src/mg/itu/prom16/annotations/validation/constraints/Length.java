@@ -9,7 +9,7 @@ import mg.itu.prom16.annotations.validation.Constraint;
 import mg.itu.prom16.annotations.validation.logic.LengthLogic;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target(ElementType.FIELD)
 @Constraint(validator = LengthLogic.class)
 public @interface Length {
 	double min() default 0;

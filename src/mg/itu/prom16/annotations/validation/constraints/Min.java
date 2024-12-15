@@ -9,7 +9,7 @@ import mg.itu.prom16.annotations.validation.Constraint;
 import mg.itu.prom16.annotations.validation.logic.MinLogic;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target(ElementType.FIELD)
 @Constraint(validator = MinLogic.class)
 
 public @interface Min {
