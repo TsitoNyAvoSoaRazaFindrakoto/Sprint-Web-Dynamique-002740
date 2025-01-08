@@ -30,7 +30,7 @@ public class ParameterCreator {
 
 				HashMap<String, List<String>> error = Validation.assertObject(classTobuild, corresponding_fields, values[i]);
 
-				if (error.isEmpty()) {
+				if (error==null || error.isEmpty()) {
 					result[i] = ClassIterator.cast_and_create(classTobuild, corresponding_fields, values[i]);
 				} else {
 					if (hasErrors) {

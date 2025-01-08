@@ -9,13 +9,15 @@ import mg.itu.prom16.annotations.validation.constraints.Min;
 public class MinLogic implements Validator {
 
 	@Override
-	public void isvalid(Field f, Object arg) throws IllegalArgumentException {
-		Validation.assertNumberValidation(f, arg);
+	public String isvalid(Field f, Object arg) throws Exception {
+		arg = Validation.assertNumberValidation(f, arg);
 		double min = f.getDeclaredAnnotation(Min.class).value();
 		double value = ((Number) arg).doubleValue();
 		if (value < min) {
-			throw new IllegalArgumentException(f.getDeclaredAnnotation(Min.class).error() + " " + min);
+			System.out.println(f.getName() + f.getDeclaredAnnotation(Min.class).error() + " " + min);
+			return f.getName() + f.getDeclaredAnnotation(Min.class).error() + " " + min;
 		}
+		return null;
 	}
 	
 }

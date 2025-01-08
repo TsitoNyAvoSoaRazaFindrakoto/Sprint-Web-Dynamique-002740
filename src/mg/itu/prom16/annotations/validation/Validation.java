@@ -6,37 +6,48 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import mg.itu.prom16.reflect.TypeUtility;
 
 public class Validation {
 
-	public static void assertNumberValidation(Field f, Object arg) throws IllegalArgumentException {
+	public static Object assertNumberValidation(Field f, Object arg) throws Exception {
 		if (!(arg instanceof Number)) {
-			throw new IllegalArgumentException(f.getName() + " is not a number");
+			return TypeUtility.castStringToType(arg.toString(), f.getType());
 		}
+		return arg;
 	}
 
-	public static void assertValidation(Field f, Object arg) throws Exception {
+	public static List<String> assertValidation(Field f, Object arg) throws Exception {
 		Annotation[] annotations = f.getDeclaredAnnotations();
+		List<String> errors = new ArrayList<String>();
 		for (Annotation annotation : annotations) {
 			if (annotation.annotationType().isAnnotationPresent(Constraint.class)) {
 				Class<? extends Validator> c = annotation.annotationType().getAnnotation(Constraint.class).validator();
-					Validator validator = c.getDeclaredConstructor().newInstance();
-					validator.isvalid(f, arg);
+				Validator validator = c.getDeclaredConstructor().newInstance();
+				String result = validator.isvalid(f, arg);
+				if (result != null) {
+					errors.add(result);
+				}
 			}
 		}
+		return errors;
 	}
 
-	public static HashMap<String,List<String>> assertObject(Class<?> c, Field[] fields, Object[] args) throws Exception {
-		HashMap<String,List<String>> errors = new HashMap<>();
+	public static HashMap<String, List<String>> assertObject(Class<?> c, Field[] fields, Object[] args) throws Exception {
+		HashMap<String, List<String>> errors = new HashMap<>();
 		for (int i = 0; i < fields.length; i++) {
-			Field  f   = fields[i];
-			Object arg = args[i];
+			Field field = fields[i];
+			Object argument = args[i];
 			try {
-				assertValidation(f, arg);
+				List<String> argsValidation = assertValidation(field, argument);
+				if (!argsValidation.isEmpty()) {
+					errors.put(field.getName(), argsValidation);
+				}
 			} catch (IllegalArgumentException typeException) {
-				List<String> fieldErrors = errors.get("error_"+f.getName()) == null ? new ArrayList<>() :  errors.get(f.getName());
+				List<String> fieldErrors = errors.get(field.getName()) == null ? new ArrayList<>()
+						: errors.get(field.getName());
 				fieldErrors.add(typeException.getMessage());
-				errors.put(f.getName(), fieldErrors);
+				errors.put(field.getName(), fieldErrors);
 			}
 		}
 		if (!errors.isEmpty()) {

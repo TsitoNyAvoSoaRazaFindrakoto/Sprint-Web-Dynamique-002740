@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import mg.itu.prom16.annotations.request.URLMap;
+import mg.itu.prom16.annotations.request.RequestMapping;
 import mg.itu.prom16.reflect.ClassIterator;
 import mg.itu.prom16.request.ParameterCreator;
 import mg.itu.prom16.request.ParameterFilter;
@@ -32,10 +32,10 @@ public class OutputManager {
 		if (!errors.isEmpty()) {
 			System.out.println("there are errors");
 			for (String errorKey : errors.keySet()) {
-				paramSource.setAttribute(errorKey, errors.get(errorKey));
+				paramSource.setAttribute("validation_"+errorKey, errors.get(errorKey));
 			}
 			ParameterFilter.transformToAttribute(paramSource, params);
-			return new IllegalArgumentException("constraint");
+			throw new IllegalArgumentException("constraint");
 		}
 
 		// prendre la session , cookies , contexte , fichier,...
@@ -54,7 +54,7 @@ public class OutputManager {
 		Class<?> methodsource = map.getDeclaringClass(verb);
 		Object result = OutputManager.callMethod(paramSource, methodsource, map.get(verb));
 
-		if (map.get(verb).getAnnotation(URLMap.class).rest()) {
+		if (map.get(verb).getAnnotation(RequestMapping.class).rest()) {
 			Gson jsoner = new Gson();
 			contentTarget.setContentType("text/json");
 			PrintWriter out = contentTarget.getWriter();

@@ -51,9 +51,9 @@ public class AnnotationFinder {
 		Method[] allMethods = location.getDeclaredMethods();
 
 		for (Method method : allMethods) {
-			if (method.isAnnotationPresent(mg.itu.prom16.annotations.request.URLMap.class)) {
-				String verb = method.getAnnotation(mg.itu.prom16.annotations.request.URLMap.class).method();
-				String urlValue = method.getAnnotation(mg.itu.prom16.annotations.request.URLMap.class).path();
+			if (method.isAnnotationPresent(mg.itu.prom16.annotations.request.RequestMapping.class)) {
+				String verb = method.getAnnotation(mg.itu.prom16.annotations.request.RequestMapping.class).method();
+				String urlValue = method.getAnnotation(mg.itu.prom16.annotations.request.RequestMapping.class).path();
 				HashVerb verbHash = map.containsKey(urlValue) ? map.get(urlValue) : new HashVerb();
 				verbHash.put(verb, method);
 				map.put(urlValue, verbHash);
@@ -88,9 +88,9 @@ public class AnnotationFinder {
 		Method[] allMethods = location.getDeclaredMethods();
 
 		for (Method method : allMethods) {
-			if (method.isAnnotationPresent(mg.itu.prom16.annotations.request.URLMap.class)) {
-				String verb = method.getAnnotation(mg.itu.prom16.annotations.request.URLMap.class).method();
-				String urlValue = method.getAnnotation(mg.itu.prom16.annotations.request.URLMap.class).path();
+			if (method.isAnnotationPresent(mg.itu.prom16.annotations.request.RequestMapping.class)) {
+				String verb = method.getAnnotation(mg.itu.prom16.annotations.request.RequestMapping.class).method();
+				String urlValue = method.getAnnotation(mg.itu.prom16.annotations.request.RequestMapping.class).path();
 				HashVerb verbHash = map.containsKey(urlValue) ? map.get(urlValue) : new HashVerb();
 				verbHash.put(verb, method);
 				map.put(urlValue, verbHash);

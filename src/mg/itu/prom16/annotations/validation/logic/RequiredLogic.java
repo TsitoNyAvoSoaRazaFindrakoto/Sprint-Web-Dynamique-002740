@@ -8,10 +8,12 @@ import mg.itu.prom16.annotations.validation.constraints.Required;
 public class RequiredLogic implements Validator {
 
 	@Override
-	public void isvalid(Field f, Object arg) throws IllegalArgumentException {
+	public String isvalid(Field f, Object arg) throws Exception{
 		if (arg == null || (arg instanceof String && ((String) arg).isEmpty())) {
-			throw new IllegalArgumentException(f.getDeclaredAnnotation(Required.class).error());
+			System.out.println(f.getName() + f.getDeclaredAnnotation(Required.class).error());
+			return f.getName() + f.getDeclaredAnnotation(Required.class).error();
 		}
+		return null;
 	}
 
 }

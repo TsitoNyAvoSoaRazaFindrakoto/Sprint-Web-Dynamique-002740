@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.itu.prom16.annotations.framework.AnnotationFinder;
-import mg.itu.prom16.annotations.request.URLMap;
+import mg.itu.prom16.annotations.request.RequestMapping;
 import mg.itu.prom16.annotations.validation.Fallback;
 import mg.itu.prom16.outputHandler.OutputManager;
 import mg.itu.prom16.types.mapping.HashVerb;
