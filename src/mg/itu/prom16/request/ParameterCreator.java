@@ -5,8 +5,6 @@ import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
-
 import mg.itu.prom16.annotations.models.FieldAnnotationManager;
 import mg.itu.prom16.annotations.validation.Validation;
 import mg.itu.prom16.reflect.ClassIterator;

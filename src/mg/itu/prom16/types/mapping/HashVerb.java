@@ -21,7 +21,7 @@ public class HashVerb extends HashMap<String, Method> {
 		}
 	}
 
-	public Class<?> getDeclaringClass(String key){
+	public Class<?> getDeclaringClass(String key) {
 		return get(key).getDeclaringClass();
 	}
 
@@ -35,7 +35,7 @@ public class HashVerb extends HashMap<String, Method> {
 
 	@Override
 	public void putAll(Map<? extends String, ? extends Method> m) {
-		for (String key :m.keySet()) {
+		for (String key : m.keySet()) {
 			put(key, m.get(key));
 		}
 	}

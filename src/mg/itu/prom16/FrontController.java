@@ -11,13 +11,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.itu.prom16.annotations.framework.AnnotationFinder;
-import mg.itu.prom16.annotations.request.RequestMapping;
 import mg.itu.prom16.annotations.validation.Fallback;
 import mg.itu.prom16.outputHandler.OutputManager;
 import mg.itu.prom16.types.mapping.HashVerb;
 import mg.itu.prom16.types.returnType.ModelAndView;
 
 public class FrontController extends HttpServlet {
+	public static String roleMapping ;
 	protected HashMap<String, HashVerb> urlMapping;
 
 	@Override
@@ -34,6 +34,7 @@ public class FrontController extends HttpServlet {
 	public void init() throws ServletException {
 		try {
 			urlMapping = AnnotationFinder.urlMapping(getServletContext(), "controllerPackage");
+			roleMapping = getServletContext().getInitParameter("roleMapping");
 			super.init();
 		} catch (Exception e) {
 			throw new ServletException(e);
