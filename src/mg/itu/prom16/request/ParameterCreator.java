@@ -5,8 +5,6 @@ import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
-
 import mg.itu.prom16.annotations.models.FieldAnnotationManager;
 import mg.itu.prom16.annotations.validation.Validation;
 import mg.itu.prom16.reflect.ClassIterator;
@@ -30,7 +28,7 @@ public class ParameterCreator {
 
 				HashMap<String, List<String>> error = Validation.assertObject(classTobuild, corresponding_fields, values[i]);
 
-				if (error.isEmpty()) {
+				if (error==null || error.isEmpty()) {
 					result[i] = ClassIterator.cast_and_create(classTobuild, corresponding_fields, values[i]);
 				} else {
 					if (hasErrors) {

@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface URLMap {
+public @interface RequestMapping {
 	String path();
 	String method() default "GET";
 	boolean rest() default false; 

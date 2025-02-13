@@ -11,7 +11,6 @@ import mg.itu.prom16.annotations.validation.logic.MinLogic;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @Constraint(validator = MinLogic.class)
-
 public @interface Min {
 	double value() default Double.MIN_VALUE;
 	String error() default "value too low";

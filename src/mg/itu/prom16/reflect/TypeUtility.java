@@ -44,8 +44,9 @@ public class TypeUtility {
 
 	// Method to cast a string to a desired type
 	public static Object castStringToType(String value, Class<?> targetType) throws Exception {
-		// System.err.println(targetType);
-		// Convert to wrapper class if the target type is primitive
+		if (value == null || value.isEmpty()) {
+			throw new IllegalArgumentException("argument is null");
+		}
 		boolean isPrimitive = targetType.isPrimitive();
 		if (isPrimitive) {
 		targetType = getWrapperType(targetType);
@@ -57,14 +58,14 @@ public class TypeUtility {
 		
 		if (isPrimitive) {
 		// System.out.println("primitive");
-		if (targetType == Integer.class) return (int) result;
-		if (targetType == Boolean.class) return (boolean) result;
-		if (targetType == Byte.class) return (byte) result;
-		if (targetType == Character.class) return (char) result;
-		if (targetType == Double.class) return (double) result;
-		if (targetType == Float.class) return (float) result;
-		if (targetType == Long.class) return (long) result;
-		if (targetType == Short.class) return (short) result;
+			if (targetType == Integer.class) return (int) result;
+			if (targetType == Boolean.class) return (boolean) result;
+			if (targetType == Byte.class) return (byte) result;
+			if (targetType == Character.class) return (char) result;
+			if (targetType == Double.class) return (double) result;
+			if (targetType == Float.class) return (float) result;
+			if (targetType == Long.class) return (long) result;
+			if (targetType == Short.class) return (short) result;
 		}
 		
 
