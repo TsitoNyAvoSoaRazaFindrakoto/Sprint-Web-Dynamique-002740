@@ -10,12 +10,10 @@ public class FieldAnnotationManager {
 	public static Field[] getFieldsWithAlternateName(Class<?> c) {
 		ArrayList<Field> fields = new ArrayList<Field>();
 		for (Field f : c.getDeclaredFields()) {
-			if (f.isAnnotationPresent(Exclude.class)) {
+			if (f.isAnnotationPresent(Exclude.class))
 				continue;
-			}
 			fields.add(f);
 		}
-
 		return fields.toArray(new Field[0]);
 	}
 
