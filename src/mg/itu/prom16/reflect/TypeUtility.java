@@ -1,10 +1,11 @@
 package mg.itu.prom16.reflect;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TypeUtility {
 
@@ -22,18 +23,17 @@ public class TypeUtility {
 		primitiveToWrapperMap.put(void.class, Void.class);
 	}
 
-	// Method to get the wrapper class for a given primitive type
 	private static Class<?> getWrapperType(Class<?> primitiveType) {
 		return primitiveToWrapperMap.get(primitiveType);
 	}
 
-	// Method to check if a class can be cast from a String
 	public static boolean canCast(Class<?> c) {
 		return primitiveToWrapperMap.containsKey(c) ||
 				primitiveToWrapperMap.containsValue(c) ||
 				c == String.class ||
 				c == LocalDate.class ||
-				c == LocalDateTime.class;
+				c == LocalDateTime.class ||
+				c == LocalTime.class;
 	}
 
 	public static boolean isSameType(Class<?> a, Class<?> b) {
@@ -46,7 +46,6 @@ public class TypeUtility {
 		return a.equals(b);
 	}
 
-	// Method to cast a string to a desired type
 	public static Object castStringToType(String value, Class<?> targetType) throws Exception {
 		if (value == null || value.isEmpty()) {
 			throw new IllegalArgumentException("Argument is null or empty");
@@ -59,49 +58,49 @@ public class TypeUtility {
 			return LocalDate.parse(value);
 		} else if (targetType == LocalDateTime.class) {
 			return LocalDateTime.parse(value);
+		} else if (targetType == LocalTime.class) {
+			return LocalTime.parse(value);
 		} else {
-			Method valueOfMethod;
 			try {
-				valueOfMethod = targetType.getMethod("valueOf", String.class);
+				Method valueOfMethod = targetType.getMethod("valueOf", String.class);
+				Object result = valueOfMethod.invoke(null, value);
+				return isPrimitive ? convertToPrimitive(result, targetType) : result;
 			} catch (NoSuchMethodException e) {
 				throw new IllegalArgumentException("No valueOf(String) method for " + targetType.getName());
 			}
-			Object result = valueOfMethod.invoke(null, value);
-			if (isPrimitive) {
-				return convertToPrimitive(result, targetType);
-			}
-			return result;
 		}
 	}
 
-	// Helper method to convert a wrapper result back to its primitive if needed
 	private static Object convertToPrimitive(Object result, Class<?> wrapperType) {
-		if (wrapperType == Integer.class) return ((Integer) result).intValue();
-		if (wrapperType == Boolean.class) return ((Boolean) result).booleanValue();
-		if (wrapperType == Byte.class) return ((Byte) result).byteValue();
-		if (wrapperType == Character.class) return ((Character) result).charValue();
-		if (wrapperType == Double.class) return ((Double) result).doubleValue();
-		if (wrapperType == Float.class) return ((Float) result).floatValue();
-		if (wrapperType == Long.class) return ((Long) result).longValue();
-		if (wrapperType == Short.class) return ((Short) result).shortValue();
+		if (wrapperType == Integer.class)
+			return ((Integer) result).intValue();
+		if (wrapperType == Boolean.class)
+			return ((Boolean) result).booleanValue();
+		if (wrapperType == Byte.class)
+			return ((Byte) result).byteValue();
+		if (wrapperType == Character.class)
+			return ((Character) result).charValue();
+		if (wrapperType == Double.class)
+			return ((Double) result).doubleValue();
+		if (wrapperType == Float.class)
+			return ((Float) result).floatValue();
+		if (wrapperType == Long.class)
+			return ((Long) result).longValue();
+		if (wrapperType == Short.class)
+			return ((Short) result).shortValue();
 		return result;
 	}
 
 	public static boolean isCommonJavaType(Class<?> clazz) {
 		return clazz.isPrimitive() ||
-				TypeUtility.primitiveToWrapperMap.containsValue(clazz) ||
+				primitiveToWrapperMap.containsValue(clazz) ||
 				clazz == String.class ||
 				Number.class.isAssignableFrom(clazz) ||
 				clazz == Boolean.class ||
 				clazz == Character.class ||
 				clazz == LocalDate.class ||
 				clazz == LocalDateTime.class ||
-				TypeUtility.canCast(clazz);
+				clazz == LocalTime.class ||
+				canCast(clazz);
 	}
-
-	public static void main(String[] args) throws Exception {
-		Object o = String.valueOf("hello");
-		System.out.println(o.getClass());
-	}
-
 }
