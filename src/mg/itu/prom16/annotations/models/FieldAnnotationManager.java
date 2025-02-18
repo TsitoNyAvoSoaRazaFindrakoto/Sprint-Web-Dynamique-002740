@@ -3,13 +3,14 @@ package mg.itu.prom16.annotations.models;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
+import mg.itu.prom16.annotations.request.Exclude;
 import mg.itu.prom16.annotations.request.FieldAlternate;
 
 public class FieldAnnotationManager {
 	public static Field[] getFieldsWithAlternateName(Class<?> c) {
 		ArrayList<Field> fields = new ArrayList<Field>();
 		for (Field f : c.getDeclaredFields()) {
-			if (f.isAnnotationPresent(FieldAlternate.class) && f.getDeclaredAnnotation(FieldAlternate.class).exclude()) {
+			if (f.isAnnotationPresent(Exclude.class)) {
 				continue;
 			}
 			fields.add(f);

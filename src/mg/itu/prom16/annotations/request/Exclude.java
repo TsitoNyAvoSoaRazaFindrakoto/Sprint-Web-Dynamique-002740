@@ -4,6 +4,6 @@ import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface FieldAlternate {
-	String name() default "";
+public @interface Exclude {
+	
 }
