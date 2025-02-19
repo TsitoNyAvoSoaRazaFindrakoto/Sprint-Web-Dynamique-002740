@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 public @interface RequestMapping {
 	String path();
 	String method() default "GET";
-	boolean rest() default false; 
+	boolean rest() default false;
 }

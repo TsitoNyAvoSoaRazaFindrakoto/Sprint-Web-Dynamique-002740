@@ -4,12 +4,9 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class ModelAndView {
+	boolean redirect = false;
 	String view;
 	HashMap<String, Object> attributes = new HashMap<String,Object>();
-
-	// Getters and setters:
-
-	// for page
 
 	public void setView(String page) {
 		this.view = page;
@@ -68,5 +65,13 @@ public class ModelAndView {
 		boolean invalidPage = getView()==null || getView().isEmpty(); 
 		boolean invalidAttribute = ( getAttributes()==null || getAttributes().isEmpty());
 		return  invalidPage && invalidAttribute;
+	}
+
+	public boolean isRedirect() {
+		return redirect;
+	}
+
+	public void setRedirect(boolean redirect) {
+		this.redirect = redirect;
 	}
 }
