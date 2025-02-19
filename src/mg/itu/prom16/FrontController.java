@@ -17,7 +17,7 @@ import mg.itu.prom16.types.mapping.HashVerb;
 import mg.itu.prom16.types.returnType.ModelAndView;
 
 public class FrontController extends HttpServlet {
-	public static String roleMapping ;
+	public static String roleMapping;
 	protected HashMap<String, HashVerb> urlMapping;
 
 	@Override
@@ -102,13 +102,17 @@ public class FrontController extends HttpServlet {
 				if (header == null) {
 					header = "/views/page.jsp";
 				}
-				request.getRequestDispatcher(header).forward(request, resp);
+				if (v.isRedirect()) {
+					resp.sendRedirect(header);
+				} else {
+					request.getRequestDispatcher(header).forward(request, resp);
+				}
 			}
 		} catch (IllegalArgumentException e) {
 			if (e.getMessage() == "constraint") {
 				String method = urlMethod.get(request.getMethod().toUpperCase()).getAnnotation(Fallback.class).method();
 				String path = urlMethod.get(request.getMethod().toUpperCase()).getAnnotation(Fallback.class).verb();
-				HttpServletRequestWrapper newRequest = new HttpServletRequestWrapper(request){
+				HttpServletRequestWrapper newRequest = new HttpServletRequestWrapper(request) {
 					public String getMethod() {
 						return method;
 					}

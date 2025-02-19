@@ -29,7 +29,6 @@ public class ModelAndView {
 		getAttributes().putAll(newatt);
 	}
 	
-
 	public void deleteAttribute( String key ){
 		getAttributes().remove(key);
 	}
