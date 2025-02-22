@@ -68,7 +68,7 @@ public class OutputManager {
 
 		Object caller = ClassIterator.instance(location);
 		Parameter[] params = tocall.getParameters();
-		Object[][] values = ParameterFilter.findParamValues(paramSource, params);
+		String[][] values = ParameterFilter.findParamValues(paramSource, params);
 		Object[] paramValues = ParameterCreator.createParameters(values, params, errors);
 
 		// validation echouee

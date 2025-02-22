@@ -11,7 +11,7 @@ import mg.itu.prom16.reflect.ClassIterator;
 import mg.itu.prom16.reflect.TypeUtility;
 
 public class ParameterCreator {
-	public static Object[] createParameters(Object[][] values, Parameter[] params, HashMap<String, List<String>> errors)
+	public static Object[] createParameters(String[][] values, Parameter[] params, HashMap<String, List<String>> errors)
 			throws Exception {
 		Boolean hasErrors = false;
 		Object[] result = new Object[values.length];

@@ -28,7 +28,7 @@ public class FieldAnnotationManager {
 		return paramId;
 	}
 
-	public static String[] getAlternateFieldName(Class<?> c) {
+	public static String[] getFieldsName(Class<?> c) {
 		return getAlternateNames(getFieldsWithAlternateName(c));
 	}
 
