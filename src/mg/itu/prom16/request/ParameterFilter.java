@@ -47,6 +47,7 @@ public class ParameterFilter {
 				}
 				String value = req.getParameter(params[i][j]);
 				if (value == null) {
+					j = params[i].length;
 					params[i] = null;
 					continue;
 				}
@@ -76,7 +77,7 @@ public class ParameterFilter {
 
 	public static String[] findParameterNames(HttpServletRequest req, Parameter m) throws Exception {
 		if (m.isAnnotationPresent(Param.class)) {
-			return new String[] { findAttribute(req, m) };
+			return new  String[]{ findAttribute(req, m) };
 		}
 		return FieldAnnotationManager.getFieldsName(m.getType());
 	}
@@ -85,7 +86,8 @@ public class ParameterFilter {
 	public static String findAttribute(HttpServletRequest req, Parameter m) throws Exception {
 		if (m.isAnnotationPresent(Param.class)) {
 			String attributeName = m.getAnnotation(Param.class).name();
-			return attributeName.isBlank() ? m.getName() : attributeName;
+			String name = attributeName.isBlank() ? m.getName() : attributeName;
+			return name;
 		}
 		throw new Exception("ETU002740 : no annotation present for " + m.getName());
 	}
