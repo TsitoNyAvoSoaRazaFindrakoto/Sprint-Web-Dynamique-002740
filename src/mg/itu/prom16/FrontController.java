@@ -100,7 +100,7 @@ public class FrontController extends HttpServlet {
 				}
 				String header = v.getView();
 				if (header == null) {
-					header = "/views/page.jsp";
+					header = "/index.jsp";
 				}
 				if (v.isRedirect()) {
 					resp.sendRedirect(header);
