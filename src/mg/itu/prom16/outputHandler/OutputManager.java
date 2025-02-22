@@ -1,6 +1,7 @@
 package mg.itu.prom16.outputHandler;
 
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
@@ -26,7 +27,8 @@ public class OutputManager {
 	private static void checkAuthorization(HttpServletRequest paramSource, Class<?> location, Method tocall) {
 		HttpSession session = paramSource.getSession(false); // Don't create a new session if it doesn't exist
 
-		if ((!location.isAnnotationPresent(Auth.class) && !tocall.isAnnotationPresent(Auth.class)) || tocall.isAnnotationPresent(Public.class))
+		if ((!location.isAnnotationPresent(Auth.class) && !tocall.isAnnotationPresent(Auth.class))
+				|| tocall.isAnnotationPresent(Public.class))
 			return;
 
 		if (session == null)
@@ -120,26 +122,32 @@ public class OutputManager {
 		ModelAndView v = new ModelAndView();
 		try {
 			Object result = OutputManager.getOuptut(paramSource, contentTarget, map, paramSource.getMethod());
-			/*
-			 * if (oldMap != null && result instanceof IllegalArgumentException
-			 * && ((IllegalArgumentException) result).getMessage() == "constraint") {
-			 * System.out.println("rollback");
-			 * result = getOuptut(paramSource, contentTarget, oldMap);
-			 * }
-			 */
-
 			if (result == null)
 				return null;
 			v = ((ModelAndView) result);
-
 		} catch (Exception e) {
 			if (e instanceof IllegalArgumentException
 					&& ((IllegalArgumentException) e).getMessage() == "constraint") {
 				System.out.println("need to rollback");
 				throw ((IllegalArgumentException) e);
 			}
-			v.setView("/views/error.jsp");
-			v.setAttribute("error", e);
+			System.out.println("error in method " + map.get(paramSource.getMethod()));
+			if (e instanceof InvocationTargetException) {
+				Throwable cause = e.getCause();
+				v.setAttribute("error", cause);
+				System.out.println(cause.getMessage());
+				for (StackTraceElement ste : cause.getStackTrace()) {
+					System.out.println(ste.toString());
+				}
+			} else {
+				v.setAttribute("error", e);
+				System.out.println(e.getMessage());
+				for (StackTraceElement ste : e.getStackTrace()) {
+					System.out.println(ste.toString());
+				}
+			}
+			v.setView("views/error.jsp");
+
 		}
 		return v;
 
