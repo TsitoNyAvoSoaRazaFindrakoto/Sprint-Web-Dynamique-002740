@@ -23,14 +23,12 @@ public class ParameterFilter {
 	public static void transformToAttribute(HttpServletRequest req, Parameter[] m) throws Exception {
 		String[][] params = ParameterFilter.findAllRequestParams(req, m);
 		for (int i = 0; i < params.length; i++) {
-			if (params[i] == null) {
-				continue;
-			}
-			for (int j = 0; j < params[i].length; j++) {
-				if (params[i][j] == null) {
-					continue;
+			if (params[i] != null) {
+				for (int j = 0; j < params[i].length; j++) {
+					if (params[i][j] != null) {
+						req.setAttribute(params[i][j], req.getParameter(params[i][j]));
+					}
 				}
-				req.setAttribute(params[i][j], req.getParameter(params[i][j]));
 			}
 		}
 	}
@@ -38,20 +36,12 @@ public class ParameterFilter {
 	public static String[][] findParamValues(HttpServletRequest req, Parameter[] m) throws Exception {
 		String[][] params = ParameterFilter.findAllRequestParams(req, m);
 		for (int i = 0; i < params.length; i++) {
-			if (params[i] == null) {
-				continue;
-			}
-			for (int j = 0; j < params[i].length; j++) {
-				if (params[i][j] == null) {
-					continue;
+			if (params[i] != null) {
+				for (int j = 0; j < params[i].length; j++) {
+					if (params[i][j] != null) {
+						params[i][j] = req.getParameter(params[i][j]);
+					}
 				}
-				String value = req.getParameter(params[i][j]);
-				if (value == null) {
-					j = params[i].length;
-					params[i] = null;
-					continue;
-				}
-				params[i][j] = value;
 			}
 		}
 		return params;
@@ -77,7 +67,7 @@ public class ParameterFilter {
 
 	public static String[] findParameterNames(HttpServletRequest req, Parameter m) throws Exception {
 		if (m.isAnnotationPresent(Param.class)) {
-			return new  String[]{ findAttribute(req, m) };
+			return new String[] { findAttribute(req, m) };
 		}
 		return FieldAnnotationManager.getFieldsName(m.getType());
 	}

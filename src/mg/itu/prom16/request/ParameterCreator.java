@@ -15,31 +15,31 @@ public class ParameterCreator {
 			throws Exception {
 		Boolean hasErrors = false;
 		Object[] result = new Object[values.length];
-		for (int i = 0; i < values.length; i++) {
+
+		for (int i = 0; i < values.length; ++i) {
 			Class<?> classTobuild = params[i].getType();
-			if (values[i] == null)
-				continue;
-			else if (classTobuild.equals(String.class)) {
-				result[i] = values[i][0];
-			} else if (TypeUtility.canCast(classTobuild) && values[i][0] != null) {
-				result[i] = TypeUtility.castStringToType(((String) values[i][0]), classTobuild);
-			} else {
-				Field[] corresponding_fields = FieldAnnotationManager.getFieldsWithAlternateName(classTobuild);
-
-				HashMap<String, List<String>> error = Validation.assertObject(classTobuild, corresponding_fields, values[i]);
-
-				if (error==null || error.isEmpty()) {
-					result[i] = ClassIterator.cast_and_create(classTobuild, corresponding_fields, values[i]);
+			if (values[i] != null) {
+				if (classTobuild.equals(String.class)) {
+					result[i] = values[i][0];
+				} else if (TypeUtility.canCast(classTobuild)) {
+					result[i] = values[i][0] == null ? null : TypeUtility.castStringToType(values[i][0], classTobuild);
 				} else {
-					if (hasErrors) {
-						errors.putAll(error);
+					Field[] corresponding_fields = FieldAnnotationManager.getFieldsWithAlternateName(classTobuild);
+					HashMap<String, List<String>> error = Validation.assertObject(classTobuild, corresponding_fields, values[i]);
+					if (error != null && !error.isEmpty()) {
+						if (hasErrors) {
+							errors.putAll(error);
+						} else {
+							hasErrors = true;
+							errors.putAll(error);
+						}
 					} else {
-						hasErrors = true;
-						errors.putAll(error);
+						result[i] = ClassIterator.cast_and_create(classTobuild, corresponding_fields, values[i]);
 					}
 				}
 			}
 		}
+
 		return result;
 	}
 }

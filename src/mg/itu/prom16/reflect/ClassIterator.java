@@ -53,26 +53,24 @@ public class ClassIterator {
 	public static Object cast_and_create(Class<?> c, Field[] fields, Object[] args) throws Exception {
 		Object instance = ClassIterator.instance(c);
 		for (int i = 0; i < fields.length; i++) {
-			if (args[i] == null) {
-				continue;
+			if (args[i] != null) {				
+				Object fieldvalue = args[i];
+				if (fields[i].getType() != String.class && TypeUtility.canCast(fields[i].getType())) {
+					fieldvalue = TypeUtility.castStringToType(((String) fieldvalue), fields[i].getType());
+					// throw new Exception(" casted : " + fieldvalue.getClass() + " -- " +
+					// fields[i].getType());
+				}
+				
+				Method m;
+				if (TypeUtility.isSameType(fieldvalue.getClass(), fields[i].getType())) {
+					m = MethodIterator.setter(c, fields[i]);
+				} else if (fieldvalue instanceof String) {
+					m = MethodIterator.setter_string(c, fields[i]);
+				} else {
+					m = MethodIterator.setter_type(c, fields[i], fieldvalue.getClass());
+				}
+				m.invoke(instance, fieldvalue);
 			}
-
-			Object fieldvalue = args[i];
-			if (fields[i].getType() != String.class && TypeUtility.canCast(fields[i].getType())) {
-				fieldvalue = TypeUtility.castStringToType(((String) fieldvalue), fields[i].getType());
-				// throw new Exception(" casted : " + fieldvalue.getClass() + " -- " +
-				// fields[i].getType());
-			}
-
-			Method m;
-			if (TypeUtility.isSameType(fieldvalue.getClass(), fields[i].getType())) {
-				m = MethodIterator.setter(c, fields[i]);
-			} else if (fieldvalue instanceof String) {
-				m = MethodIterator.setter_string(c, fields[i]);
-			} else {
-				m = MethodIterator.setter_type(c, fields[i], fieldvalue.getClass());
-			}
-			m.invoke(instance, fieldvalue);
 		}
 		return instance;
 	}
