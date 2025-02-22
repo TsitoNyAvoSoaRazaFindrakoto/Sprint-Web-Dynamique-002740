@@ -29,7 +29,7 @@ public class HashVerb extends HashMap<String, Method> {
 		if (!isValableKey(key)) {
 			throw new IllegalArgumentException("Verb '" + key + "'' not allowed . only 'GET','POST' for now");
 		} else if (containsKey(key)) {
-			throw new IllegalArgumentException("Verb '" + key + " already exists");
+			throw new IllegalArgumentException("Verb '" + key + " already exists for path" + value);
 		}
 	}
 
