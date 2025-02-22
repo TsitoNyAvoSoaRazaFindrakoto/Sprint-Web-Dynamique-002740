@@ -38,9 +38,6 @@ public class AnnotationFinder {
 				}
 			}
 		}
-		// if (controllerArrayList.isEmpty()) {
-		// throw new ServletException("Package vide");
-		// }
 		return controllerArrayList;
 	}
 
