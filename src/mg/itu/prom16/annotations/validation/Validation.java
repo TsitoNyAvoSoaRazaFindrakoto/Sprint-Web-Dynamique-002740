@@ -51,6 +51,7 @@ public class Validation {
 			}
 		}
 		if (!errors.isEmpty()) {
+			System.out.println("there were errors");
 			return errors;
 		}
 		return null;

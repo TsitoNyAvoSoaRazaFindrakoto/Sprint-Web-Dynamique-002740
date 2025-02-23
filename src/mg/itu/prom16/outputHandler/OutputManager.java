@@ -16,6 +16,7 @@ import mg.itu.prom16.FrontController;
 import mg.itu.prom16.annotations.auth.Auth;
 import mg.itu.prom16.annotations.auth.Public;
 import mg.itu.prom16.annotations.request.RequestMapping;
+import mg.itu.prom16.exception.ValidationException;
 import mg.itu.prom16.reflect.ClassIterator;
 import mg.itu.prom16.request.ParameterCreator;
 import mg.itu.prom16.request.ParameterFilter;
@@ -78,7 +79,7 @@ public class OutputManager {
 				paramSource.setAttribute("validation_" + errorKey, errors.get(errorKey));
 			}
 			ParameterFilter.transformToAttribute(paramSource, params);
-			throw new IllegalArgumentException("constraint");
+			throw new ValidationException();
 		}
 
 		// prendre la session , cookies , contexte , fichier,...
@@ -126,10 +127,9 @@ public class OutputManager {
 				return null;
 			v = ((ModelAndView) result);
 		} catch (Exception e) {
-			if (e instanceof IllegalArgumentException
-					&& ((IllegalArgumentException) e).getMessage() == "constraint") {
+			if (e instanceof ValidationException) {
 				System.out.println("need to rollback");
-				throw ((IllegalArgumentException) e);
+				throw ((ValidationException) e);
 			}
 			System.out.println("error in method " + map.get(paramSource.getMethod()));
 			if (e instanceof InvocationTargetException) {

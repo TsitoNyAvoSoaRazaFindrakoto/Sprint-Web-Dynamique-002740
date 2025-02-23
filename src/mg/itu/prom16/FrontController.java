@@ -2,7 +2,7 @@ package mg.itu.prom16;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 
 import jakarta.servlet.ServletException;
@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.itu.prom16.annotations.framework.AnnotationFinder;
 import mg.itu.prom16.annotations.validation.Fallback;
+import mg.itu.prom16.exception.ValidationException;
 import mg.itu.prom16.outputHandler.OutputManager;
 import mg.itu.prom16.types.mapping.HashVerb;
 import mg.itu.prom16.types.returnType.ModelAndView;
@@ -100,7 +101,7 @@ public class FrontController extends HttpServlet {
 				}
 				String header = v.getView();
 				if (header == null) {
-					header = "/index.jsp";
+					header = "index.jsp";
 				}
 				if (v.isRedirect()) {
 					resp.sendRedirect(header);
@@ -108,18 +109,14 @@ public class FrontController extends HttpServlet {
 					request.getRequestDispatcher(header).forward(request, resp);
 				}
 			}
-		} catch (IllegalArgumentException e) {
-			if (e.getMessage() == "constraint") {
-				String method = urlMethod.get(request.getMethod().toUpperCase()).getAnnotation(Fallback.class).method();
-				String path = urlMethod.get(request.getMethod().toUpperCase()).getAnnotation(Fallback.class).verb();
-				HttpServletRequestWrapper newRequest = new HttpServletRequestWrapper(request) {
-					public String getMethod() {
-						return method;
-					}
-				};
-				request.getRequestDispatcher(path).forward(newRequest, resp);
-			}
-			throw e;
+		} catch (ValidationException e) {
+			Fallback annot = urlMethod.get(request.getMethod().toUpperCase()).getAnnotation(Fallback.class);
+			HttpServletRequestWrapper newRequest = new HttpServletRequestWrapper(request) {
+				public String getMethod() {
+					return annot.method();
+				}
+			};
+			request.getRequestDispatcher(annot.verb()).forward(newRequest, resp);
 		}
 	}
 
