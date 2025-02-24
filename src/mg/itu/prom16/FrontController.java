@@ -99,15 +99,7 @@ public class FrontController extends HttpServlet {
 				for (String key : v.getAttributeNames()) {
 					request.setAttribute(key, v.getAttribute(key));
 				}
-				String header = v.getView();
-				if (header == null) {
-					header = "index.jsp";
-				}
-				if (v.isRedirect()) {
-					resp.sendRedirect(header);
-				} else {
-					request.getRequestDispatcher(header).forward(request, resp);
-				}
+				forwardRequest(v, request, resp);
 			}
 		} catch (ValidationException e) {
 			Fallback annot = urlMethod.get(request.getMethod().toUpperCase()).getAnnotation(Fallback.class);
@@ -118,6 +110,28 @@ public class FrontController extends HttpServlet {
 			};
 			request.getRequestDispatcher(annot.verb()).forward(newRequest, resp);
 		}
+	}
+
+	public void forwardRequest(ModelAndView v, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+
+		if (v.getView() == null || v.getView().isBlank()) {
+			v.setView("index.jsp");
+		}
+
+		if (v.getView().toLowerCase().endsWith(".jsp")) {
+			request.getRequestDispatcher(v.getView()).forward(request, response);
+			return;
+		}
+		final String method = v.getMethod(); // Get method only once
+		HttpServletRequestWrapper wrappedRequest = new HttpServletRequestWrapper(request) {
+			@Override
+			public String getMethod() {
+				return method;
+			}
+		};
+		wrappedRequest.getRequestDispatcher(v.getView()).forward(wrappedRequest, response);
+
 	}
 
 	protected void processRequest(HttpServletRequest req, HttpServletResponse resp)

@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class ModelAndView {
-	boolean redirect = false;
-	String view;
+	String method = "GET", view;
 	HashMap<String, Object> attributes = new HashMap<String, Object>();
 
 	public void setView(String page) {
@@ -16,12 +15,11 @@ public class ModelAndView {
 		return view;
 	}
 
-	public ModelAndView(boolean redirect, String view) {
-		this.redirect = redirect;
+	public ModelAndView(String method, String view) {
+		this.method = method;
 		this.view = view;
 	}
 
-	// for attibutes
 	public void setAttributes(HashMap<String, Object> attributes) {
 		this.attributes = attributes;
 	}
@@ -69,11 +67,12 @@ public class ModelAndView {
 		return invalidPage && invalidAttribute;
 	}
 
-	public boolean isRedirect() {
-		return redirect;
+	public String getMethod() {
+		return method;
 	}
 
-	public void setRedirect(boolean redirect) {
-		this.redirect = redirect;
+	public void setMethod(String method) {
+		this.method = method;
 	}
+
 }
