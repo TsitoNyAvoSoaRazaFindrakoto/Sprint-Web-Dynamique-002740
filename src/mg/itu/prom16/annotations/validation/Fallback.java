@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface Fallback {
 	public String verb();
 	public String method() default "GET";
+	public String[] parameters() default {};
 }

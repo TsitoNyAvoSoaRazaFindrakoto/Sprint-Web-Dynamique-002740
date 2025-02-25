@@ -100,14 +100,23 @@ public class FrontController extends HttpServlet {
 				forwardRequest(v, request, resp);
 			}
 		} catch (ValidationException e) {
-			Fallback annot = urlMethod.get(request.getMethod().toUpperCase()).getAnnotation(Fallback.class);
-			HttpServletRequestWrapper newRequest = new HttpServletRequestWrapper(request) {
-				public String getMethod() {
-					return annot.method();
-				}
-			};
-			request.getRequestDispatcher(annot.verb()).forward(newRequest, resp);
+
 		}
+	}
+
+	public void forwarToFallBack(HashVerb urlMethod, HttpServletRequest request, HttpServletResponse resp)
+			throws Exception {
+		Fallback annot = urlMethod.get(request.getMethod().toUpperCase()).getAnnotation(Fallback.class);
+		HttpServletRequestWrapper newRequest = new HttpServletRequestWrapper(request) {
+			public String getMethod() {
+				return annot.method();
+			}
+		};
+		String verb = annot.verb();
+		for (String attr : annot.parameters()) {
+			verb += attr + "=" + request.getAttribute(attr);
+		}
+		request.getRequestDispatcher(verb).forward(newRequest, resp);
 	}
 
 	public void forwardRequest(ModelAndView v, HttpServletRequest request, HttpServletResponse response)
