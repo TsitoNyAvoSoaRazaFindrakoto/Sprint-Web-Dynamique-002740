@@ -1,6 +1,7 @@
 package mg.itu.prom16.reflect;
 
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,7 +34,8 @@ public class TypeUtility {
 				c == String.class ||
 				c == LocalDate.class ||
 				c == LocalDateTime.class ||
-				c == LocalTime.class;
+				c == LocalTime.class ||
+				c == BigDecimal.class; // ADD BigDecimal.class here
 	}
 
 	public static boolean isSameType(Class<?> a, Class<?> b) {
@@ -60,6 +62,8 @@ public class TypeUtility {
 			return LocalDateTime.parse(value);
 		} else if (targetType == LocalTime.class) {
 			return LocalTime.parse(value);
+		} else if (targetType == BigDecimal.class) { // ADD BigDecimal.class handling here
+			return new BigDecimal(value);
 		} else {
 			try {
 				Method valueOfMethod = targetType.getMethod("valueOf", String.class);
@@ -95,12 +99,12 @@ public class TypeUtility {
 		return clazz.isPrimitive() ||
 				primitiveToWrapperMap.containsValue(clazz) ||
 				clazz == String.class ||
-				Number.class.isAssignableFrom(clazz) ||
+				Number.class.isAssignableFrom(clazz) || // BigDecimal is already covered here as it extends Number
 				clazz == Boolean.class ||
 				clazz == Character.class ||
 				clazz == LocalDate.class ||
 				clazz == LocalDateTime.class ||
 				clazz == LocalTime.class ||
-				canCast(clazz);
+				canCast(clazz); // Keep canCast in case it's used for other checks in the future
 	}
 }
