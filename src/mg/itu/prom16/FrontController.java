@@ -2,7 +2,6 @@ package mg.itu.prom16;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 
 import jakarta.servlet.ServletException;
@@ -74,7 +73,6 @@ public class FrontController extends HttpServlet {
 	public HashVerb manageError(HttpServletRequest request, HttpServletResponse resp) throws Exception {
 		String url = getUrlMapping(request);
 
-		// Output: /mapping/endpoint;
 		if (!urlMapping.containsKey(url)) {
 			resp.sendError(404, "ETU0002740 : url not found " + url);
 			return null;
@@ -116,7 +114,7 @@ public class FrontController extends HttpServlet {
 			throws Exception {
 
 		if (v.getView() == null || v.getView().isBlank()) {
-			v.setView("index.jsp");
+			v.setView("/index.jsp");
 		}
 
 		if (v.getView().toLowerCase().endsWith(".jsp")) {

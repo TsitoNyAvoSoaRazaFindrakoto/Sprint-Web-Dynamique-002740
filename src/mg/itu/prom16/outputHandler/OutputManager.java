@@ -146,7 +146,7 @@ public class OutputManager {
 					System.out.println(ste.toString());
 				}
 			}
-			v.setView("views/error.jsp");
+			v.setView("/views/error.jsp");
 
 		}
 		return v;
