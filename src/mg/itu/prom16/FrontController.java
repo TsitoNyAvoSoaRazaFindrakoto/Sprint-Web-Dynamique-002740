@@ -147,12 +147,13 @@ public class FrontController extends HttpServlet {
 		try {
 			goToRequestOutput(req, resp);
 		} catch (Exception e) {
-			// inutile si on a une page d'erreur
 			display_urls(resp);
 			for (StackTraceElement ste : e.getStackTrace()) {
-				out.println(ste.toString());
+				out.println("<p style='color:red;'>" + ste.toString() + "</p>");
+				System.out.println(ste.toString());
 			}
-			out.println(e.getMessage());
+			out.println("<p style='font-weight: bold;'>" + e.getLocalizedMessage() + "</p>");
+			System.out.println(e.getLocalizedMessage());
 		}
 	}
 
