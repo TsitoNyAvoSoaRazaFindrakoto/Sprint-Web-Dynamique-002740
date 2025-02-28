@@ -100,7 +100,7 @@ public class FrontController extends HttpServlet {
 				forwardRequest(v, request, resp);
 			}
 		} catch (ValidationException e) {
-
+			forwarToFallBack(urlMethod, request, resp);
 		}
 	}
 
@@ -113,8 +113,8 @@ public class FrontController extends HttpServlet {
 			}
 		};
 		String verb = annot.verb();
-		for (String attr : annot.parameters()) {
-			verb += attr + "=" + request.getAttribute(attr);
+		for (int i = 0 ; i<annot.parameters().length ;i++) {
+			verb += annot.parameters()[i] + "=" + request.getAttribute(annot.parameters()[i]);
 		}
 		request.getRequestDispatcher(verb).forward(newRequest, resp);
 	}
@@ -128,6 +128,10 @@ public class FrontController extends HttpServlet {
 
 		if (v.getView().toLowerCase().endsWith(".jsp")) {
 			request.getRequestDispatcher(v.getView()).forward(request, response);
+			return;
+		}
+		if (v.redirect) {
+			response.sendRedirect(v.getView());
 			return;
 		}
 		final String method = v.getMethod(); // Get method only once
