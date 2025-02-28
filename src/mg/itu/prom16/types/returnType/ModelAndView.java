@@ -5,6 +5,7 @@ import java.util.Set;
 
 public class ModelAndView {
 	String method = "GET", view;
+	public boolean redirect = false ;
 	HashMap<String, Object> attributes = new HashMap<String, Object>();
 
 	public void setView(String page) {
