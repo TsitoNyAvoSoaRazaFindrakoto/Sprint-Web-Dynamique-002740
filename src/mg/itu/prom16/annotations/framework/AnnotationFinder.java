@@ -19,10 +19,7 @@ public class AnnotationFinder {
 		}
 
 		String bin_path = "WEB-INF/classes/";
-
-		if (packagename != null && !packagename.trim().isEmpty()) {
-			bin_path += packagename.replace(".", "/");
-		}
+		String packagePath = packagename != null ? packagename.replace(".", "/") : "";
 
 		String realPath = sc.getRealPath(bin_path);
 		if (realPath == null) {
@@ -34,12 +31,22 @@ public class AnnotationFinder {
 
 		if (!b.exists() || !b.isDirectory()) {
 			System.out
-					.println("Warning: package '" + packagename + "' does not exist or is not accessible. Path: " + realPath);
-			return controllerArrayList; // Return empty list instead of proceeding with invalid directory
+					.println("Warning: default package does not exist or is not accessible. Path: " + realPath);
+			return controllerArrayList;
+		}
+
+		// Check if the specific package directory exists
+		File packageDir = new File(b, packagePath);
+		String actualPackageName = packagename;
+		if (!packageDir.exists() || !packageDir.isDirectory()) {
+			System.out
+					.println("Warning: package directory '" + packageDir.getPath()
+							+ "' does not exist or is not accessible. Switching to default package.");
+			actualPackageName = null;
 		}
 
 		try {
-			scanDirectory(b, packagename != null ? packagename : "", controllerArrayList);
+			scanDirectory(b, actualPackageName, controllerArrayList);
 		} catch (Exception e) {
 			throw new ServletException("Error scanning directory: " + realPath, e);
 		}
@@ -48,18 +55,30 @@ public class AnnotationFinder {
 	}
 
 	private static void scanDirectory(File directory, String packagename, ArrayList<Class<?>> controllerArrayList) {
-		for (File onefile : directory.listFiles()) {
+		File[] files = directory.listFiles();
+		if (files == null)
+			return;
+
+		for (File onefile : files) {
 			if (onefile.isFile() && onefile.getName().endsWith(".class")) {
 				Class<?> clazz;
 				try {
-					clazz = Class.forName(packagename + "." + onefile.getName().split(".class")[0]);
+					String className = onefile.getName().replace(".class", "");
+					String fullClassName = packagename != null && !packagename.isEmpty()
+							? packagename + "." + className
+							: className;
+					clazz = Class.forName(fullClassName);
 					if (clazz.isAnnotationPresent(mg.itu.prom16.annotations.request.Controller.class))
 						controllerArrayList.add(clazz);
 				} catch (ClassNotFoundException e) {
+					System.err.println("Could not load classes in package: " + packagename);
 					e.printStackTrace();
 				}
 			} else if (onefile.isDirectory()) {
-				scanDirectory(onefile, packagename + "." + onefile.getName(), controllerArrayList);
+				String newPackageName = packagename != null && !packagename.isEmpty()
+						? packagename + "." + onefile.getName()
+						: onefile.getName();
+				scanDirectory(onefile, newPackageName, controllerArrayList);
 			}
 		}
 	}
