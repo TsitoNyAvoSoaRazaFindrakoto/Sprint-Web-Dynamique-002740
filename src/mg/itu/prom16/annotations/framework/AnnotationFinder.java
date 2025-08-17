@@ -43,6 +43,8 @@ public class AnnotationFinder {
 					.println("Warning: package directory '" + packageDir.getPath()
 							+ "' does not exist or is not accessible. Switching to default package.");
 			actualPackageName = null;
+		} else {
+			b = packageDir;
 		}
 
 		try {
